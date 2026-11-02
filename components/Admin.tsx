@@ -128,6 +128,22 @@ export default function Admin({
       before?.focus();
     };
   }, [Boolean(editing), Boolean(deleting)]);
+  async function signOut() {
+    try {
+      if (!preview) {
+        const response = await fetch("/api/admin/session", {
+          method: "DELETE",
+        });
+        if (!response.ok)
+          throw new Error("Could not sign out. Please try again.");
+      }
+      setAuthenticated(false);
+      setPreview(false);
+      setContent(initialContent);
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
   async function signIn(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setBusy(true);
@@ -389,13 +405,7 @@ export default function Admin({
           <button
             className="icon-button"
             aria-label="Sign out"
-            onClick={async () => {
-              if (!preview)
-                await fetch("/api/admin/session", { method: "DELETE" });
-              setAuthenticated(false);
-              setPreview(false);
-              setContent(initialContent);
-            }}
+            onClick={signOut}
           >
             <LogOut size={17} />
           </button>
@@ -404,9 +414,18 @@ export default function Admin({
       <div className="admin-main">
         <div className="admin-topline">
           <span>STUDIO / {tab.toUpperCase()}</span>
-          <Link href="/" target="_blank" className="text-link">
-            View website <ExternalLink size={14} />
-          </Link>
+          <div className="admin-topline-actions">
+            <Link href="/" target="_blank" className="text-link">
+              View website <ExternalLink size={14} />
+            </Link>
+            <button
+              className="icon-button mobile-signout"
+              aria-label="Sign out of studio"
+              onClick={signOut}
+            >
+              <LogOut size={16} />
+            </button>
+          </div>
         </div>
         {preview && (
           <div className="admin-preview-banner">

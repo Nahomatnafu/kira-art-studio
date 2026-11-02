@@ -1,0 +1,8 @@
+.git
+.next
+.next-test
+node_modules
+work
+public/uploads
+.env*
+*.tsbuildinfo

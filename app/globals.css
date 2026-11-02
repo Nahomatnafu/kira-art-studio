@@ -3587,3 +3587,16 @@ select:focus {
   opacity: 0.25;
   mask-image: linear-gradient(90deg, transparent, #000 60%);
 }
+.admin-topline-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mobile-signout {
+  display: none;
+}
+@media (max-width: 640px) {
+  .mobile-signout {
+    display: inline-flex;
+  }
+}
