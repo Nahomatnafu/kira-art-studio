@@ -16,7 +16,7 @@ import {
   Users,
 } from "lucide-react";
 import { readContent } from "@/lib/store";
-import { biography, tagline } from "@/lib/content";
+import { artistPortrait, biography, tagline } from "@/lib/content";
 import Gallery from "@/components/Gallery";
 import InquiryForm from "@/components/InquiryForm";
 import SocialLinks from "@/components/SocialLinks";
@@ -74,20 +74,12 @@ export default async function Page({
           <PageHeading eyebrow="" title="The Artist Behind the Canvas" />
           <div className="about-grid">
             <div className="about-portrait">
-              {c.settings.portrait ? (
-                <img
-                  src={c.settings.portrait}
-                  alt="The artist behind Kira Art Studio"
-                />
-              ) : (
-                <div className="portrait-placeholder">
-                  <Brush size={55} strokeWidth={0.75} />
-
-                  <h2>Meet Kira.</h2>
-                  <p>Artist portrait coming soon</p>
-                  <div className="pattern-strip" />
-                </div>
-              )}
+              <img
+                src={c.settings.portrait || artistPortrait}
+                alt="Kirubel Mikael, known as Kira, beside his artwork"
+                width={1080}
+                height={836}
+              />
               <div className="about-caption">
                 <span>SELF-TAUGHT VISUAL ARTIST</span>
                 <span>{c.settings.location}</span>

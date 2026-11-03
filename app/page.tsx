@@ -12,7 +12,7 @@ import {
   Sprout,
 } from "lucide-react";
 import { readContent } from "@/lib/store";
-import { getStudioContacts, tagline } from "@/lib/content";
+import { artistPortrait, getStudioContacts, tagline } from "@/lib/content";
 import ArtworkCard from "@/components/ArtworkCard";
 import SocialLinks from "@/components/SocialLinks";
 export default async function Home() {
@@ -72,12 +72,8 @@ export default async function Home() {
       <section className="artist-band">
         <div className="artist-art">
           <img
-            src={c.settings.portrait || "/images/women.webp"}
-            alt={
-              c.settings.portrait
-                ? "Kirubel Mikael, known as Kira"
-                : "Temporary artwork, awaiting the artist’s portrait"
-            }
+            src={c.settings.portrait || artistPortrait}
+            alt="Kirubel Mikael, known as Kira, beside his artwork"
             loading="lazy"
           />
         </div>

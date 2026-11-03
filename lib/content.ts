@@ -114,6 +114,7 @@ export const biography = [
   "For me, art is more than creating beautiful images. It is a way to preserve memories, celebrate cultural identity, express emotions, and give a voice to stories that deserve to be seen and remembered.",
   "Through Kira Art Studio, my vision is to create meaningful artwork that connects people across cultures and generations, inspires conversations, and reminds us of the beauty and strength within our shared humanity.",
 ];
+export const artistPortrait = "/images/kira-artist.jpg";
 export const studioContact = {
   email: "Kirubel@kiraartstudio.com",
   phone: "+1 (503) 348-4653",
@@ -279,7 +280,7 @@ export const seed: Content = {
     instagram: studioContact.instagram,
     tiktok: studioContact.tiktok,
     facebook: "",
-    portrait: "",
+    portrait: artistPortrait,
     studioImage: "",
     communityImage: "",
     exhibitionVideo: "",

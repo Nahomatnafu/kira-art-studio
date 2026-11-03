@@ -3861,3 +3861,39 @@ body {
     display: none;
   }
 }
+
+/* Acrylic browns from the supplied horizontal logo. */
+:root {
+  --brand-acrylic-dark: #3d1201;
+  --brand-acrylic-warm: #6a2c09;
+  --brand-acrylic-paint:
+    linear-gradient(
+      139deg,
+      #6a2c0900 8%,
+      #6a2c0914 24%,
+      #3d12010a 38%,
+      #6a2c0900 52%,
+      #6a2c0914 71%,
+      #3d120100 90%
+    ),
+    radial-gradient(ellipse at 22% 35%, #6a2c09 0%, #6a2c0900 59%),
+    linear-gradient(120deg, #3d1201 0%, #6a2c09 46%, #3d1201 76%, #6a2c09 100%);
+}
+.site-header,
+.site-footer {
+  background-color: var(--brand-acrylic-dark);
+  background-image: var(--brand-acrylic-paint);
+}
+.artist-art img {
+  object-position: 65% center;
+}
+.about-portrait img {
+  height: auto;
+  object-fit: contain;
+}
+@media (max-width: 900px) {
+  .main-nav {
+    background-color: var(--brand-acrylic-dark);
+    background-image: var(--brand-acrylic-paint);
+  }
+}

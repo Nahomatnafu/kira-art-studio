@@ -8,3 +8,5 @@ Generated using the built-in ImageGen tool for this project. These concept image
 - `public/images/city.webp`: “Portrait 3:4 expressive oil painting placeholder. A vintage yellow city bus passing colorful weathered urban architecture in Addis Ababa, two elegantly dressed women seen from behind. Rich warm golden sunlight, terracotta walls, muted teal shadows, dramatic thick paint and abstract geometric shapes. Fill canvas, no frame, lettering or watermark.”
 
 The supplied Kira_Art_Horizontal_Logo.jpg and Kira_Art_Vertical_Logo.jpg are preserved unchanged in public/images/kira-logo-horizontal.jpg and public/images/kira-logo-vertical.jpg. The vertical logo is also used as app/icon.jpg. Layout selects the appropriate logo for desktop and mobile. General UI icons come from Lucide; Instagram and TikTok use SVG brand marks with accessible link labels. Source Sans 3 and Cormorant Garamond are locally bundled through Fontsource.
+
+The supplied Kira_Art_Artist.jpg is preserved unchanged as public/images/kira-artist.jpg and used on the homepage and About page. Header and footer backgrounds use CSS blends of the supplied acrylic browns #3D1201 and #6A2C09.
