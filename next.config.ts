@@ -4,6 +4,8 @@ const config: NextConfig = {
   poweredByHeader: false,
   async headers() {
     return [
+      {source:"/api/:path*",headers:[{key:"Cache-Control",value:"no-store"}]},
+      {source:"/admin",headers:[{key:"Cache-Control",value:"no-store"},{key:"X-Robots-Tag",value:"noindex, nofollow"}]},
       {
         source: "/(.*)",
         headers: [
@@ -13,10 +15,6 @@ const config: NextConfig = {
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
-          },
-          {
-            key: "Content-Security-Policy",
-            value: "frame-ancestors 'none'; object-src 'none'; base-uri 'self'",
           },
         ],
       },

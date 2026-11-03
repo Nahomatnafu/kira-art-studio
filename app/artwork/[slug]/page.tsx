@@ -4,6 +4,9 @@ import { ArrowLeft, Check } from "lucide-react";
 import { readContent } from "@/lib/store";
 import { money } from "@/lib/content";
 import ArtworkCard from "@/components/ArtworkCard";
+import ArtworkImage from "@/components/ArtworkImage";
+import PhotoGallery from "@/components/PhotoGallery";
+import { artworkCommunityPhotos } from "@/lib/media";
 export async function generateMetadata({
   params,
 }: {
@@ -33,11 +36,10 @@ export default async function ArtworkDetail({
       </Link>
       <div className="artwork-detail-grid">
         <div className="detail-image">
-          <img
-            src={a.image || "/images/hero-art.webp"}
-            alt={
-              a.placeholder ? "Temporary concept image for " + a.title : a.title
-            }
+          <ArtworkImage
+            imageKey={"artwork:"+a.id}
+            src={a.image || "/images/artworks/quiet-memory.jpg"}
+            alt={a.title}
           />
           <span className="watermark">
             KIRA<span>ART STUDIO</span>
@@ -120,6 +122,13 @@ export default async function ArtworkDetail({
           )}
         </div>
       </div>
+      <PhotoGallery
+        photos={c.settings.artworkPhotos[a.id] || artworkCommunityPhotos[a.slug] || []}
+        groupKey={"artwork-gallery:"+a.id}
+        title="This Artwork in the Community"
+        initialCount={2}
+        moreLink="/exhibitions#photo-gallery"
+      />
       <div className="section-top related-heading">
         <div>
           <span className="eyebrow">CONTINUE EXPLORING</span>

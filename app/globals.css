@@ -3897,3 +3897,288 @@ body {
     background-image: var(--brand-acrylic-paint);
   }
 }
+
+/* Feather the logo boundary without softening its lettering. */
+.brand-logo {
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent),
+    linear-gradient(0deg, transparent, #000 14%, #000 86%, transparent);
+  mask-image:
+    linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent),
+    linear-gradient(0deg, transparent, #000 14%, #000 86%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+.artwork-visual {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.artwork-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eee7dc;
+}
+.artwork-image > .artwork-visual {
+  transition: transform 0.55s;
+}
+.artwork-image:hover > .artwork-visual {
+  transform: scale(1.02);
+}
+.detail-image .artwork-visual {
+  height: auto;
+  max-height: 780px;
+}
+.hero-painting {
+  left: 28%;
+  width: 72%;
+  height: 100%;
+}
+.hero-painting .artwork-visual {
+  width: 100%;
+  height: 100%;
+}
+.hero {
+  background-color: #3d1201;
+}
+.table-art > .artwork-visual {
+  width: 43px;
+  height: 55px;
+  flex-shrink: 0;
+}
+.overview-art > .artwork-visual {
+  width: 44px;
+  height: 52px;
+  flex-shrink: 0;
+}
+.admin-collection-image > .artwork-visual {
+  width: 100%;
+  height: 100%;
+}
+.editor-image-preview {
+  height: 240px;
+  max-height: 240px;
+  width: 100%;
+  background: #ede5d9;
+}
+.editor-image-preview > .artwork-visual {
+  height: 100%;
+  width: 100%;
+}
+.admin-sidebar {
+  background-color: var(--brand-acrylic-dark);
+  background-image: var(--brand-acrylic-paint);
+  color: #f7ecdc;
+  border-color: #784025;
+}
+.admin-sidebar > .eyebrow {
+  color: #dcc1a0;
+}
+.admin-sidebar nav button {
+  color: #e6ceb2;
+}
+.admin-sidebar nav button.active,
+.admin-sidebar nav button:hover {
+  background: #f7e6cc20;
+  color: #fff5e5;
+}
+.admin-sidebar-bottom small {
+  color: #d6b795;
+}
+.admin-avatar {
+  background: #ead0ab;
+  color: #3d1201;
+}
+.admin-shell .button-dark,
+.admin-login-card .button-dark {
+  background-color: var(--brand-acrylic-dark);
+  background-image: var(--brand-acrylic-paint);
+}
+.admin-login-art {
+  background-image:
+    linear-gradient(90deg, #3d1201cf, #3d120135),
+    url("/images/kira-artist-02.jpg");
+  background-position:
+    center,
+    center 40%;
+}
+@media (max-width: 640px) {
+  .hero-painting {
+    left: 15%;
+    width: 100%;
+  }
+  .admin-sidebar {
+    border-color: #784025;
+  }
+}
+
+/* Community photos remain photographs, separate from the artwork catalog. */
+.photo-gallery-section {
+  margin-top: 65px;
+  padding-top: 45px;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 120px;
+}
+.photo-gallery-section .section-top {
+  align-items: center;
+}
+.photo-gallery-section h2 {
+  margin-bottom: 0;
+}
+.community-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+.community-photo-tile {
+  padding: 0;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 3/2;
+  background: #e6ded1;
+  position: relative;
+}
+.community-photo-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  transition: transform 0.4s;
+}
+.community-photo-tile:hover img {
+  transform: scale(1.025);
+}
+.gallery-more {
+  display: flex;
+  margin: 30px auto 0;
+}
+.home-community-gallery .photo-gallery-section {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+.photo-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #1d110be8;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+}
+.photo-lightbox-dialog {
+  max-width: 1200px;
+  width: 100%;
+  color: var(--paper);
+}
+.photo-lightbox-top,
+.photo-lightbox-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 0;
+  font-size: 12px;
+}
+.photo-lightbox-top {
+  font-family: var(--serif);
+  font-size: 28px;
+}
+.photo-lightbox-image {
+  height: 76vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.photo-lightbox-image img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+@media (max-width: 640px) {
+  .community-photo-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 13px;
+  }
+  .photo-gallery-section {
+    margin-top: 45px;
+    padding-top: 35px;
+  }
+  .photo-gallery-section .section-top {
+    gap: 17px;
+  }
+  .photo-gallery-section h2 {
+    font-size: 35px;
+  }
+  .photo-lightbox {
+    padding: 15px;
+  }
+  .photo-lightbox-top {
+    font-size: 23px;
+  }
+  .photo-lightbox-image {
+    height: 68vh;
+  }
+  .brand-logo {
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent),
+      linear-gradient(0deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image:
+      linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent),
+      linear-gradient(0deg, transparent, #000 6%, #000 94%, transparent);
+  }
+}
+
+.hero-painting {-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%);mask-image:linear-gradient(90deg,transparent,#000 18%);}
+
+/* Editable image frames preserve the full photograph before applying zoom. */
+.managed-image {display:block;position:relative;width:100%;height:100%;overflow:hidden;isolation:isolate;}
+.managed-image-layer {position:absolute;inset:0;display:block;transform-origin:center;}
+.managed-image .artwork-visual {display:block!important;width:100%!important;height:100%!important;max-width:none;max-height:none;aspect-ratio:auto!important;object-fit:contain!important;object-position:center!important;}
+.about-photo-frame {aspect-ratio:1019/1280;width:100%;max-height:720px;background:#e7dfd2;}
+.about-portrait .about-photo-frame img {height:100%;object-fit:contain;}
+.commission-photo-frame {width:100%;height:100%;min-height:400px;}
+.artist-art>.managed-image,.commission-visual>.managed-image,.home-contact-image>.managed-image {position:absolute;inset:0;}
+.artist-art,.commission-visual {position:relative;}
+.home-contact-band>.managed-image {min-height:350px;}
+.community-photo-tile>.managed-image {position:absolute;inset:0;}
+.community-hero-image>.managed-image {height:100%;}
+.event-photo-frame {height:220px;margin:0 0 20px;overflow:hidden;background:#e7dfd2;}
+.artwork-image>.managed-image,.detail-image>.managed-image,.collection-cover>.managed-image,.collection-large-image>.managed-image {position:absolute;inset:0;}
+.detail-image {aspect-ratio:3/4;}
+.overview-art>.managed-image {width:44px;height:55px;flex:0 0 44px;}
+.table-art>.managed-image {width:44px;height:55px;flex:0 0 44px;}
+.admin-collection-image>.managed-image {width:100%;height:100%;}
+.page-images-manager h2 {margin:32px 0 24px;}
+.page-image-toolbar {padding:24px;display:grid;grid-template-columns: minmax(180px,1fr) minmax(260px,2fr) auto;align-items:center;gap:20px;}
+.page-image-toolbar label {display:grid;gap:8px;font-size:14px;}
+.page-image-toolbar p {margin:0;font-size:15px;}
+.page-image-toolbar>span {grid-column:1/-1;font-size:14px;color:var(--muted);}
+.page-image-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start;}
+.image-editor-card {padding:24px;background:#fffdf8;border:1px solid #ded5c7;min-width:0;}
+.image-editor-card h3 {font-size:26px;margin:0 0 18px;}
+.image-framing-preview {position:relative;max-height:420px;width:100%;overflow:hidden;display:grid;place-items:center;background:repeating-conic-gradient(#e7dfd2 0% 25%,#f3ede4 0% 50%) 50%/20px 20px;}
+.image-editor-card>label {display:grid;gap:8px;margin-top:18px;font-size:14px;}
+.image-editor-actions {display:flex;gap:16px;align-items:end;flex-wrap:wrap;margin:18px 0;}
+.image-editor-actions>label:not(.button) {display:grid;gap:6px;flex:1;min-width:140px;font-size:14px;}
+.image-framing-controls {border:0;border-top:1px solid #ded5c7;padding:16px 0 0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.image-framing-controls legend {font-size:14px;padding:0 8px 0 0;}
+.image-framing-controls label {display:grid;grid-template-columns:1fr auto;gap:8px;min-width:0;font-size:14px;}
+.image-framing-controls label input,.image-framing-controls label select {grid-column:1/-1;}
+.image-framing-controls input[type=range] {padding:0;min-height:28px;accent-color:#6a2c09;}
+.image-framing-controls output {font-variant-numeric:tabular-nums;}
+.image-framing-controls .text-link {justify-self:start;font-size:14px;}
+.page-gallery-editor,.artwork-galleries-editor {margin:36px 0;}
+.page-gallery-editor>.button {margin-top:24px;}
+.image-remove {margin:12px 0 24px;color:#813d1c;}
+.featured-selection {padding:24px;margin-top:24px;}
+.featured-selection .checkbox-label {margin:10px 0;}
+.artwork-galleries-editor details {border-top:1px solid #ded5c7;padding:20px 0;}
+.artwork-galleries-editor summary {cursor:pointer;font-size:20px;margin-bottom:20px;}
+@media(max-width:900px){.page-image-toolbar{grid-template-columns:1fr;}.page-image-toolbar>span{grid-column:auto;}}
+@media(max-width:640px){.page-image-grid{grid-template-columns:1fr;}.image-editor-card{padding:18px;}.image-framing-controls{grid-template-columns:1fr;}.commission-photo-frame{min-height:320px;}.about-photo-frame{max-height:none;}.page-image-toolbar{padding:18px;}.home-contact-band>.managed-image{height:300px;min-height:0;}}

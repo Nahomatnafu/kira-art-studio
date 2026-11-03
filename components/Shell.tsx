@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import {useImageSettings} from "./ImageSettingsProvider";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Menu, Search, X } from "lucide-react";
@@ -16,14 +17,15 @@ const nav = [
   ["Contact", "/contact"],
 ];
 export function Logo() {
+  const images=useImageSettings();
   return (
     <picture className="brand-logo">
       <source
         media="(max-width: 640px)"
-        srcSet="/images/kira-logo-vertical.jpg"
+        srcSet={images["brand.vertical"]?.src || "/images/kira-logo-vertical.jpg"}
       />
       <img
-        src="/images/kira-logo-horizontal.jpg"
+        src={images["brand.horizontal"]?.src || "/images/kira-logo-horizontal.jpg"}
         alt="Kira Art Studio"
         width={190}
         height={95}
@@ -205,7 +207,7 @@ export function Header({
     </>
   );
 }
-export function Footer({ settings }: { settings: Content["settings"] }) {
+export function Footer({ settings }: { settings: Pick<Content["settings"],"email"|"phone"|"instagram"|"tiktok"|"location"> }) {
   const contact = getStudioContacts(settings);
   return (
     <footer className="site-footer">
@@ -235,7 +237,7 @@ export function Footer({ settings }: { settings: Content["settings"] }) {
           © {new Date().getFullYear()} Kira Art Studio. All rights reserved.
         </span>
         <span>Original artwork. Do not reproduce without permission.</span>
-        <Link href="/admin">Studio login </Link>
+
       </div>
     </footer>
   );

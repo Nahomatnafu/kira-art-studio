@@ -1,4 +1,8 @@
-# Temporary image assets
+# Current website assets
+
+The live artwork catalog uses 12 distinct client-supplied paintings. Eleven use clean photos from Artpieces; Looking Beyond is presented through a viewport over its original promotional sheet. Community sections use 27 unique client-supplied photographs. Files remain visually unedited. See ARTWORK_IMPORT.md for source mapping and duplicate handling. The logo edges are softened with a CSS mask, and all original logo image files remain unchanged.
+
+# Retired concept assets
 
 Generated using the built-in ImageGen tool for this project. These concept images are temporary layout assets, not the client's actual artwork or artist portrait. All are replaceable. The supplied branding logos are included as website assets. The planning PDF and reference screenshots remain local.
 
@@ -9,4 +13,6 @@ Generated using the built-in ImageGen tool for this project. These concept image
 
 The supplied Kira_Art_Horizontal_Logo.jpg and Kira_Art_Vertical_Logo.jpg are preserved unchanged in public/images/kira-logo-horizontal.jpg and public/images/kira-logo-vertical.jpg. The vertical logo is also used as app/icon.jpg. Layout selects the appropriate logo for desktop and mobile. General UI icons come from Lucide; Instagram and TikTok use SVG brand marks with accessible link labels. Source Sans 3 and Cormorant Garamond are locally bundled through Fontsource.
 
-The supplied Kira_Art_Artist.jpg is preserved unchanged as public/images/kira-artist.jpg and used on the homepage and About page. Header and footer backgrounds use CSS blends of the supplied acrylic browns #3D1201 and #6A2C09.
+The supplied Kira_Art_Artist.jpg is preserved unchanged as public/images/kira-artist.jpg and used in the homepage About the Artist section. Header and footer backgrounds use CSS blends of the supplied acrylic browns #3D1201 and #6A2C09.
+
+Kira_Art_Artist_02.jpg is preserved unchanged as public/images/kira-artist-02.jpg and used for the About page portrait and studio imagery.

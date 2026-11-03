@@ -1,3 +1,4 @@
+import {ImageSettingsProvider} from "@/components/ImageSettingsProvider";
 import type { Metadata } from "next";
 import { Header, Footer } from "@/components/Shell";
 import { readContent } from "@/lib/store";
@@ -19,15 +20,24 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const content = await readContent();
+  const publicImages=Object.fromEntries(Object.entries(content.settings.pageImages).filter(([key])=>{
+    if(key.startsWith("artwork:"))return content.artworks.some(a=>a.published&&key==="artwork:"+a.id);
+    if(key.startsWith("artwork-gallery:"))return content.artworks.some(a=>a.published&&key.startsWith("artwork-gallery:"+a.id+".photo."));
+    if(key.startsWith("event:"))return content.events.some(e=>e.published&&key==="event:"+e.id);
+    return /^(home\.|about\.|commissions\.|community\.|collections\.|exhibitions\.|collection:|brand\.)/.test(key);
+  }));
+  const {email,phone,instagram,tiktok,location}=content.settings;
   return (
     <html lang="en">
       <body>
+        <ImageSettingsProvider images={publicImages}>
         <Header
           artworks={content.artworks.filter((a) => a.published)}
           instagram={getStudioContacts(content.settings).instagram}
         />
         <main id="main">{children}</main>
-        <Footer settings={content.settings} />
+        <Footer settings={{email,phone,instagram,tiktok,location}} />
+        </ImageSettingsProvider>
       </body>
     </html>
   );

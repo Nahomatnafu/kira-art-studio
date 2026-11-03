@@ -100,6 +100,7 @@ try {
   const headers = { "Content-Type": "application/json", Cookie: cookie };
   let content = await (await request("/api/admin/content", { headers })).json();
   const original = structuredClone(content);
+  content.settings.pageImages["about.artist"]={src:"/images/kira-artist-02.jpg",zoom:.8,positionX:30,positionY:60,fit:"contain"};
   content.artworks[0].status = "sold";
   content.artworks[0].title = "Smoke Test Sold";
   const saved = await request("/api/admin/content", {
@@ -110,6 +111,12 @@ try {
   assert.equal(saved.status, 200);
   content = await saved.json();
   assert.equal(content.revision, original.revision + 1);
+  assert.equal(content.settings.pageImages["about.artist"].zoom,.8);
+  const about=await(await request("/about")).text();assert.match(about,/data-image-key="about.artist" data-image-zoom="0.8"/);
+  const invalidZoom=structuredClone(content);invalidZoom.settings.pageImages["about.artist"].zoom=999;
+  assert.equal((await request("/api/admin/content",{method:"PUT",headers,body:JSON.stringify(invalidZoom)})).status,400);
+  const invalidImage=structuredClone(content);invalidImage.settings.pageImages["about.artist"].src="javascript:alert(1)";
+  assert.equal((await request("/api/admin/content",{method:"PUT",headers,body:JSON.stringify(invalidImage)})).status,400);
   const publicPage = await (await request("/artwork/quiet-majesty")).text();
   assert.match(publicPage, /Smoke Test Sold/);
   assert.match(publicPage, /In a private collection/);
@@ -208,6 +215,10 @@ try {
     ).status,
     400,
   );
+  for(const [name,bytes]of [["active.svg",Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>')],["truncated.jpg",Buffer.from([255,216,255,1,2,3])]]){
+    const file=new FormData();file.set("file",new File([bytes],name,{type:"image/jpeg"}));
+    assert.equal((await request("/api/admin/upload",{method:"POST",headers:{Cookie:cookie},body:file})).status,400,"Reject active or corrupt files");
+  }
   const validUpload = new FormData();
   validUpload.set(
     "file",
@@ -224,13 +235,10 @@ try {
   const uploaded = (await ur.json()).url;
   assert.equal((await request(uploaded)).status, 200);
   await unlink("public" + uploaded);
-  const form = new FormData();
-  form.set("kind", "contact");
-  form.set("name", "Studio Test");
-  form.set("email", "test@example.com");
-  form.set("message", "A message that must not be falsely accepted.");
+  const message={kind:"contact",name:"Studio Test",email:"test@example.com",message:"A message that must not be falsely accepted."};
+  const form=JSON.stringify(message);
   assert.equal(
-    (await request("/api/inquiry", { method: "POST", body: form })).status,
+    (await request("/api/inquiry", { method: "POST", body: form,headers:{"Content-Type":"application/json"} })).status,
     503,
   );
   assert.equal(
@@ -242,8 +250,26 @@ try {
     ).status,
     200,
   );
+  assert.equal((await request("/api/admin/content",{headers})).status,401,"Logged-out cookie cannot be replayed");
+  assert.equal((await request("/api/admin/content",{headers:{...headers,Cookie:cookie+"x"}})).status,401);
+  const attachments=new FormData();attachments.set("file",new File(["file bytes"],"test.jpg",{type:"image/jpeg"}));
+  assert.equal((await request("/api/inquiry",{method:"POST",body:attachments})).status,415,"Public multipart uploads rejected");
+  for(const data of [{...message,attachment:"data:image/png;base64,x"},{...message,email:"invalid"},{...message,name:"Injected\nHeader"},{...message,website:"spam"}]){
+   assert.equal((await request("/api/inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})).status,400);
+  }
+  assert.equal((await request("/api/inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:"{"})).status,400);
+  assert.equal((await request("/api/inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...message,message:"x".repeat(40000)})})).status,413);
+  const streamed=new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode("x".repeat(40000)));controller.close()}});
+  assert.equal((await request("/api/inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:streamed,duplex:"half"})).status,413,"Actual streamed bytes limited");
+  for(const route of ["/contact","/commissions","/community"]){
+   const html=await(await request(route)).text();assert.doesNotMatch(html,/<input[^>]+type="file"/);assert.doesNotMatch(html,/Studio login/);
+  }
+  const first=await request("/about"),second=await request("/about");const policy=first.headers.get("content-security-policy");
+  assert.match(policy,/strict-dynamic/);assert.match(policy,/nonce-/);assert.notEqual(policy,second.headers.get("content-security-policy"));assert.match(await first.text(),/nonce="/);
+  for(let n=0;n<6;n++)await request("/api/admin/session",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:"wrong"})});
+  assert.equal((await request("/api/admin/session",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password})})).status,429);
   console.log(
-    "PASS authentication, CSRF, validation, concurrency, CRUD, draft privacy, image validation/upload, and unconfigured email handling",
+    "PASS authentication, CSRF, validation, concurrency, CRUD, draft privacy, image framing persistence/ranges, decoded image uploads, text-only inquiries, streamed size limits, CSP nonces, revoked sessions, throttling, and unconfigured email handling",
   );
 } catch (e) {
   console.error(log.slice(-10000));

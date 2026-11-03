@@ -14,19 +14,28 @@ import {
 import { readContent } from "@/lib/store";
 import { artistPortrait, getStudioContacts, tagline } from "@/lib/content";
 import ArtworkCard from "@/components/ArtworkCard";
+import ArtworkImage from "@/components/ArtworkImage";
 import SocialLinks from "@/components/SocialLinks";
+import PhotoGallery from "@/components/PhotoGallery";
 export default async function Home() {
   const c = await readContent();
   const contact = getStudioContacts(c.settings);
+  const heroSrc =
+    !c.settings.heroImage || c.settings.heroImage === "/images/hero-art.webp"
+      ? "/images/artworks/quiet-memory.jpg"
+      : c.settings.heroImage;
   return (
     <>
       <section className="hero">
-        <img
-          className="hero-image"
-          src={c.settings.heroImage || "/images/hero-art.webp"}
-          alt="Painting of an East African woman in profile"
-          fetchPriority="high"
-        />
+        <div className="hero-image hero-painting">
+          <ArtworkImage
+            imageKey="home.hero"
+            loading="eager"
+            src={heroSrc}
+            alt="Original artwork by Kirubel Mikael"
+            fit="cover"
+          />
+        </div>
         <div className="hero-shade" />
         <div className="hero-content">
           <h1>
@@ -71,11 +80,7 @@ export default async function Home() {
       </section>
       <section className="artist-band">
         <div className="artist-art">
-          <img
-            src={c.settings.portrait || artistPortrait}
-            alt="Kirubel Mikael, known as Kira, beside his artwork"
-            loading="lazy"
-          />
+          <ArtworkImage imageKey="home.artist" src={c.settings.portrait || artistPortrait} alt="Kirubel Mikael, known as Kira, beside his artwork" fit="contain" />
         </div>
         <div className="artist-story">
           <h2>About the Artist</h2>
@@ -115,10 +120,11 @@ export default async function Home() {
             >
               <div className={"collection-cover cover-" + i}>
                 {x.image ? (
-                  <img
+                  <ArtworkImage
+                    imageKey={"collection:"+x.id}
                     src={x.image}
                     alt={x.title + " collection cover"}
-                    loading="lazy"
+                    fit="cover"
                   />
                 ) : (
                   <span className="collection-symbol" aria-hidden="true">
@@ -145,15 +151,7 @@ export default async function Home() {
       </section>
       <section className="commission-band">
         <div className="commission-visual">
-          <img
-            src={c.settings.studioImage || "/images/coffee.webp"}
-            alt={
-              c.settings.studioImage
-                ? "Inside the artist’s studio"
-                : "Temporary still-life artwork for the studio"
-            }
-            loading="lazy"
-          />
+          <ArtworkImage imageKey="home.commission" src={c.settings.studioImage || "/images/kira-artist-02.jpg"} alt="Inside the artist’s studio" fit="cover" />
         </div>
         <div className="commission-copy">
           <h2>Commission a Painting</h2>
@@ -259,6 +257,15 @@ export default async function Home() {
           })}
         </div>
       </section>
+      <div className="section home-community-gallery">
+        <PhotoGallery
+          photos={c.settings.homePhotos}
+          groupKey="home"
+          title="Art & Community"
+          initialCount={3}
+          moreLink="/exhibitions#photo-gallery"
+        />
+      </div>
       <section className="home-contact-band">
         <div>
           <h2>Let’s Connect</h2>
@@ -285,11 +292,7 @@ export default async function Home() {
             Send a Message
           </Link>
         </div>
-        <img
-          src={c.settings.studioImage || "/images/coffee.webp"}
-          alt="Studio still life"
-          loading="lazy"
-        />
+        <ArtworkImage imageKey="home.contact" src={c.settings.studioImage || "/images/kira-artist-02.jpg"} alt="Inside the artist’s studio" fit="cover" />
       </section>
       <section className="closing-quote">
         <p>{tagline}</p>

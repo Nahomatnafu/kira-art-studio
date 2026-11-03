@@ -21,12 +21,17 @@ import {
   CalendarDays,
 } from "lucide-react";
 import { Content, contentSchema, money } from "@/lib/content";
+import ArtworkImage from "./ArtworkImage";
+import PageImageManager from "./PageImageManager";
+import ImageEditor from "./ImageEditor";
+import {defaultFraming,type ImageSetting} from "@/lib/image-settings";
 type Tab =
-  "Overview" | "Artwork" | "Collections" | "Exhibitions" | "Studio settings";
+  "Pages & images" | "Overview" | "Artwork" | "Collections" | "Exhibitions" | "Studio settings";
 type Item = Record<string, any>;
 const tabs: [Tab, typeof Palette][] = [
   ["Overview", LayoutDashboard],
   ["Artwork", Palette],
+  ["Pages & images", ImageIcon],
   ["Collections", Layers],
   ["Exhibitions", CalendarDays],
   ["Studio settings", Settings],
@@ -84,6 +89,7 @@ export default function Admin({
     kind: "artworks" | "collections" | "events";
     item: Item;
     isNew: boolean;
+    framing?:ImageSetting;
   } | null>(null);
   const [settings, setSettings] = useState(content.settings);
   const [deleting, setDeleting] = useState<{
@@ -274,6 +280,9 @@ export default function Admin({
         ? [...list, editing.item]
         : list.map((x) => (x.id === editing.item.id ? editing.item : x)),
     } as Content;
+    const imageKey=(editing.kind==="artworks"?"artwork:":editing.kind==="collections"?"collection:":"event:")+editing.item.id;
+    const view=editing.framing||content.settings.pageImages[imageKey];
+    if(view)next.settings={...content.settings,pageImages:{...content.settings.pageImages,[imageKey]:{...view,src:editing.item.image}}};
     if (await save(next)) setEditing(null);
   }
   async function deleteItem() {
@@ -546,7 +555,10 @@ export default function Admin({
                       });
                     }}
                   >
-                    <img src={a.image || "/images/hero-art.webp"} alt="" />
+                    <ArtworkImage
+                      src={a.image || "/images/artworks/quiet-memory.jpg"}
+                      alt=""
+                    />
                     <span>
                       <strong>{a.title}</strong>
                       <small>{a.materials}</small>
@@ -627,8 +639,8 @@ export default function Admin({
                     <tr key={a.id}>
                       <td>
                         <div className="table-art">
-                          <img
-                            src={a.image || "/images/hero-art.webp"}
+                          <ArtworkImage
+                            src={a.image || "/images/artworks/quiet-memory.jpg"}
                             alt=""
                           />
                           <span>
@@ -697,7 +709,7 @@ export default function Admin({
               <article className="admin-panel" key={x.id}>
                 <div className="admin-collection-image">
                   {x.image ? (
-                    <img src={x.image} alt={x.title} />
+                    <ArtworkImage src={x.image} alt={x.title} />
                   ) : (
                     <Layers size={45} strokeWidth={1} />
                   )}
@@ -791,6 +803,7 @@ export default function Admin({
             )}
           </div>
         )}
+        {tab === "Pages & images" && <PageImageManager content={content} save={save} upload={upload} busy={busy} uploading={uploading} preview={preview}/>}
         {tab === "Studio settings" && (
           <form
             className="admin-settings admin-panel"
@@ -821,65 +834,7 @@ export default function Admin({
                 </label>
               ))}
             </div>
-            <h3>Studio images & exhibition video</h3>
-            <p className="small-note">
-              Use HTTPS image URLs, or upload images up to 3 MB. Exhibition
-              video must link directly to an MP4/WebM file.
-            </p>
-            {[
-              ["heroImage", "Homepage hero image"],
-              ["portrait", "Artist portrait"],
-              ["studioImage", "Studio photograph"],
-              ["communityImage", "Community photograph"],
-              ["exhibitionVideo", "Exhibition video URL"],
-            ].map(([key, label]) => (
-              <label key={key}>
-                {label}
-                <div className="image-input-row">
-                  <input
-                    type="text"
-                    value={settings[key as keyof typeof settings] as string}
-                    onChange={(e) =>
-                      setSettings({ ...settings, [key]: e.target.value })
-                    }
-                  />
-                  {key !== "exhibitionVideo" && (
-                    <label className="button button-outline upload-button">
-                      <Upload size={16} />
-                      {uploading === key ? "Uploading…" : "Upload"}
-                      <input
-                        type="file"
-                        accept="image/png,image/jpeg,image/webp"
-                        disabled={Boolean(uploading)}
-                        onChange={(e) => {
-                          const f = e.target.files?.[0];
-                          if (f)
-                            upload(f, key, (url) =>
-                              setSettings((s) => ({ ...s, [key]: url })),
-                            );
-                        }}
-                      />
-                    </label>
-                  )}
-                </div>
-              </label>
-            ))}
-            <label>
-              Previous exhibition photo URLs{" "}
-              <small>one HTTPS URL per line</small>
-              <textarea
-                rows={4}
-                value={settings.exhibitionPhotos.join("\n")}
-                onChange={(e) =>
-                  setSettings({
-                    ...settings,
-                    exhibitionPhotos: e.target.value
-                      .split("\n")
-                      .filter(Boolean),
-                  })
-                }
-              />
-            </label>
+            <h3>Exhibition film</h3><label>Exhibition video URL<input value={settings.exhibitionVideo} onChange={e=>setSettings({...settings,exhibitionVideo:e.target.value})}/></label><p>Page photographs and galleries are managed in Pages &amp; images.</p>
             <h3>Voices from the community</h3>
             <p className="small-note">
               Publish only testimonials approved by the person quoted.
@@ -1152,7 +1107,7 @@ export default function Admin({
                                                 item: {
                                                   ...v.item,
                                                   [key]: url,
-                                                  placeholder: false,
+                                                  ...(v.kind==="artworks"?{placeholder:false}:{}),
                                                 },
                                               }
                                             : null,
@@ -1169,13 +1124,7 @@ export default function Admin({
                   </label>
                 ))}
               </div>
-              {editing.item.image && (
-                <img
-                  className="editor-image-preview"
-                  src={editing.item.image}
-                  alt="Selected image preview"
-                />
-              )}
+              {editing.item.image && <ImageEditor label="Selected image" value={editing.framing||{...defaultFraming,...content.settings.pageImages[(editing.kind==="artworks"?"artwork:":editing.kind==="collections"?"collection:":"event:")+editing.item.id],src:editing.item.image}} onChange={value=>setEditing({...editing,framing:value,item:{...editing.item,image:value.src}})} upload={(file,set)=>upload(file,"editor-image",set)} uploading={Boolean(uploading)} aspect={editing.kind==="artworks"?.75:1.5}/>}
               {error && (
                 <p role="alert" className="form-error">
                   {error}

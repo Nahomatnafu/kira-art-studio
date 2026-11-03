@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ArtworkImage from "./ArtworkImage";
 import { Artwork, money } from "@/lib/content";
 export default function ArtworkCard({ artwork: a }: { artwork: Artwork }) {
   return (
@@ -8,12 +9,10 @@ export default function ArtworkCard({ artwork: a }: { artwork: Artwork }) {
         className="artwork-image"
         aria-label={"View " + a.title}
       >
-        <img
-          src={a.image || "/images/hero-art.webp"}
-          alt={
-            a.placeholder ? "Temporary concept image for " + a.title : a.title
-          }
-          loading="lazy"
+        <ArtworkImage
+            imageKey={"artwork:"+a.id}
+          src={a.image || "/images/artworks/quiet-memory.jpg"}
+          alt={a.title}
         />
         <span className="watermark">
           KIRA<span>ART STUDIO</span>

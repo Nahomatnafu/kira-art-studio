@@ -1,0 +1,47 @@
+export const studioCommunityPhotos: string[] = [
+  "/images/community/studio-gathering-07.jpg",
+  "/images/community/studio-gathering-20.jpg",
+  "/images/community/studio-gathering-02.jpg",
+  "/images/community/studio-gathering-11.jpg",
+  "/images/community/studio-gathering-04.jpg",
+  "/images/community/studio-gathering-10.jpg",
+  "/images/community/studio-gathering-15.jpg",
+  "/images/community/studio-gathering-24.jpg",
+  "/images/community/studio-gathering-22.jpg",
+  "/images/community/studio-gathering-03.jpg",
+  "/images/community/studio-gathering-06.jpg",
+  "/images/community/studio-gathering-25.jpg",
+  "/images/community/studio-gathering-01.jpg",
+  "/images/community/studio-gathering-05.jpg",
+  "/images/community/studio-gathering-08.jpg",
+  "/images/community/studio-gathering-09.jpg",
+  "/images/community/studio-gathering-12.jpg",
+  "/images/community/studio-gathering-13.jpg",
+  "/images/community/studio-gathering-14.jpg",
+  "/images/community/studio-gathering-16.jpg",
+  "/images/community/studio-gathering-17.jpg",
+  "/images/community/studio-gathering-18.jpg",
+  "/images/community/studio-gathering-19.jpg",
+  "/images/community/studio-gathering-21.jpg",
+  "/images/community/studio-gathering-23.jpg",
+  "/images/community/studio-gathering-26.jpg",
+  "/images/community/studio-gathering-27.jpg",
+];
+export const artworkCommunityPhotos: Record<string, string[]> = {
+  "quiet-strength": [
+    "/images/community/studio-gathering-18.jpg",
+    "/images/community/studio-gathering-23.jpg",
+  ],
+  "different-in-harmony": [
+    "/images/community/studio-gathering-04.jpg",
+    "/images/community/studio-gathering-27.jpg",
+  ],
+  "a-cup-of-heritage": [
+    "/images/community/studio-gathering-01.jpg",
+    "/images/community/studio-gathering-10.jpg",
+  ],
+  "a-moment-of-freedom": [
+    "/images/community/studio-gathering-15.jpg",
+    "/images/community/studio-gathering-16.jpg",
+  ],
+};

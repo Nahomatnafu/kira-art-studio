@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Check, Upload } from "lucide-react";
+import { Check } from "lucide-react";
 export default function InquiryForm({
   kind = "contact",
   initialMessage = "",
@@ -19,7 +19,8 @@ export default function InquiryForm({
     try {
       const response = await fetch("/api/inquiry", {
         method: "POST",
-        body: new FormData(form),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
@@ -141,24 +142,6 @@ export default function InquiryForm({
           }
         />
       </label>
-      {kind === "commission" && (
-        <label className="upload-label">
-          <Upload size={18} /> Inspiration image{" "}
-          <small>optional · JPG, PNG, WebP · up to 3 MB</small>
-          <input
-            type="file"
-            name="inspiration"
-            accept="image/jpeg,image/png,image/webp"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f && f.size > 3 * 1024 * 1024) {
-                e.target.value = "";
-                setStatus("Please choose an image smaller than 3 MB.");
-              }
-            }}
-          />
-        </label>
-      )}
       <p className="form-note">
         Your details are used only to respond to this inquiry.
         {kind === "experience"

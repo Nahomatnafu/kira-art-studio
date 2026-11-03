@@ -1,15 +1,12 @@
 import { z } from "zod";
-export const safeUrl = z
-  .string()
-  .max(2000)
-  .refine(
-    (s) =>
-      !s ||
-      s.startsWith("/images/") ||
-      s.startsWith("/uploads/") ||
-      /^https:\/\//.test(s),
-    "Use an HTTPS URL or uploaded image",
-  );
+import { catalogArtworks } from "./catalog";
+import { studioCommunityPhotos } from "./media";
+export const safeUrl=z.string().max(2000).refine(s=>{
+ if(!s)return true;
+ if(/[\\\u0000-\u0020\u007f]/.test(s))return false;
+ try{const u=new URL(s,'https://kira.invalid');return s.startsWith('/')?(!s.startsWith('//')&&(u.pathname.startsWith('/images/')||u.pathname.startsWith('/uploads/'))&&!u.search&&!u.hash):u.protocol==='https:'&&!u.username&&!u.password;}catch{return false;}
+},"Use an HTTPS URL or uploaded image");
+export const imageSettingSchema=z.object({src:safeUrl,zoom:z.number().min(0.5).max(3),positionX:z.number().min(0).max(100),positionY:z.number().min(0).max(100),fit:z.enum(['contain','cover'])}).strict();
 export const artworkSchema = z.object({
   id: z.string().min(1).max(100),
   slug: z.string().regex(/^[a-z0-9-]+$/),
@@ -54,7 +51,12 @@ export const eventSchema = z.object({
   published: z.boolean(),
 });
 export const settingsSchema = z.object({
-  heroImage: safeUrl.default("/images/hero-art.webp"),
+  pageImages:z.record(z.string().min(1).max(2100),imageSettingSchema).refine(v=>Object.keys(v).length<=700).default({}),
+  homePhotos:z.array(safeUrl.refine(v=>Boolean(v),"Choose an image or remove the empty photo slot.")).max(100).refine(v=>new Set(v).size===v.length,"This gallery contains duplicate photos.").default(studioCommunityPhotos.slice(0,3)),
+  collectionPhotos:z.array(safeUrl).max(100).default(studioCommunityPhotos.slice(0,3)),
+  artworkPhotos:z.record(z.string().max(100),z.array(safeUrl).max(30)).default({}),
+  heroImage: safeUrl.default("/images/artworks/quiet-memory.jpg"),
+  aboutPortrait: safeUrl.default("/images/kira-artist-02.jpg"),
   email: z.union([z.literal(""), z.email()]),
   phone: z.string().max(40),
   location: z.string().max(150),
@@ -64,8 +66,9 @@ export const settingsSchema = z.object({
   portrait: safeUrl,
   studioImage: safeUrl,
   communityImage: safeUrl,
+  communityPhotos: z.array(safeUrl).max(100).default(studioCommunityPhotos),
   exhibitionVideo: safeUrl,
-  exhibitionPhotos: z.array(safeUrl).max(20),
+  exhibitionPhotos: z.array(safeUrl).max(100),
   testimonials: z
     .array(
       z.object({
@@ -115,13 +118,14 @@ export const biography = [
   "Through Kira Art Studio, my vision is to create meaningful artwork that connects people across cultures and generations, inspires conversations, and reminds us of the beauty and strength within our shared humanity.",
 ];
 export const artistPortrait = "/images/kira-artist.jpg";
+export const artistStudioPortrait = "/images/kira-artist-02.jpg";
 export const studioContact = {
   email: "Kirubel@kiraartstudio.com",
   phone: "+1 (503) 348-4653",
   instagram: "https://www.instagram.com/kirubel_art/",
   tiktok: "https://www.tiktok.com/@kira.art.studio5",
 };
-export function getStudioContacts(settings: Content["settings"]) {
+export function getStudioContacts<T extends Pick<Content["settings"],"email"|"phone"|"instagram"|"tiktok">>(settings: T) {
   return {
     ...settings,
     email: settings.email || studioContact.email,
@@ -132,100 +136,14 @@ export function getStudioContacts(settings: Content["settings"]) {
 }
 export const seed: Content = {
   revision: 0,
-  artworks: [
-    {
-      id: "quiet-majesty",
-      slug: "quiet-majesty",
-      title: "Quiet Majesty",
-      story:
-        "A reflection on identity, dignity, and the strength carried in stillness. Final artwork story to be supplied by the artist.",
-      dimensions: "48 × 36 inches",
-      materials: "Oil and acrylic on canvas",
-      price: 2500,
-      framingPrice: null,
-      image: "/images/hero-art.webp",
-      category: "original-paintings",
-      status: "available",
-      featured: true,
-      published: true,
-      placeholder: true,
-    },
-    {
-      id: "quiet-strength",
-      slug: "quiet-strength",
-      title: "Quiet Strength",
-      story:
-        "A celebration of connection and the beauty we carry together. Final artwork story to be supplied by the artist.",
-      dimensions: "48 × 24 inches",
-      materials: "Acrylic on canvas",
-      price: 1500,
-      framingPrice: null,
-      image: "/images/women.webp",
-      category: "original-paintings",
-      status: "available",
-      featured: true,
-      published: true,
-      placeholder: true,
-    },
-    {
-      id: "yemengelle-jagnit",
-      slug: "yemengelle-jagnit",
-      title: "Yemengelle Jagnit",
-      story:
-        "Culture, ritual, and the small moments that become lasting memories. Final artwork story to be supplied by the artist.",
-      dimensions: "14 × 18 inches",
-      materials: "Acrylic on canvas",
-      price: 300,
-      framingPrice: null,
-      image: "/images/coffee.webp",
-      category: "original-paintings",
-      status: "available",
-      featured: true,
-      published: true,
-      placeholder: true,
-    },
-    {
-      id: "echoes-of-memory",
-      slug: "echoes-of-memory",
-      title: "Echoes of Memory",
-      story:
-        "An exploration of the everyday places that shape our sense of belonging. Details and launch selection awaiting artist approval.",
-      dimensions: "Details coming soon",
-      materials: "Details coming soon",
-      price: null,
-      framingPrice: null,
-      image: "/images/city.webp",
-      category: "original-paintings",
-      status: "not-for-sale",
-      featured: true,
-      published: true,
-      placeholder: true,
-    },
-    {
-      id: "the-beauty-we-carry",
-      slug: "the-beauty-we-carry",
-      title: "The Beauty We Carry",
-      story:
-        "A meditation on shared humanity and the stories held across generations. Details and launch selection awaiting artist approval.",
-      dimensions: "Details coming soon",
-      materials: "Details coming soon",
-      price: null,
-      framingPrice: null,
-      image: "/images/hero-art.webp",
-      category: "original-paintings",
-      status: "not-for-sale",
-      featured: false,
-      published: true,
-      placeholder: true,
-    },
-  ],
+  artworks: catalogArtworks,
   collections: [
     {
       id: "original-paintings",
       title: "Original Paintings",
       description:
         "Stories of culture, identity, and everyday beauty, told on canvas.",
-      image: "/images/hero-art.webp",
+      image: "/images/artworks/quiet-majesty.jpg",
       comingSoon: false,
     },
     {
@@ -273,7 +191,12 @@ export const seed: Content = {
     },
   ],
   settings: {
-    heroImage: "/images/hero-art.webp",
+    pageImages:{},
+    homePhotos:studioCommunityPhotos.slice(0,3),
+    collectionPhotos:studioCommunityPhotos.slice(0,3),
+    artworkPhotos:{},
+    heroImage: "/images/artworks/quiet-memory.jpg",
+    aboutPortrait: artistStudioPortrait,
     email: studioContact.email,
     phone: studioContact.phone,
     location: "Portland, Oregon",
@@ -281,10 +204,11 @@ export const seed: Content = {
     tiktok: studioContact.tiktok,
     facebook: "",
     portrait: artistPortrait,
-    studioImage: "",
-    communityImage: "",
+    studioImage: artistStudioPortrait,
+    communityImage: studioCommunityPhotos[0],
+    communityPhotos: studioCommunityPhotos.slice(0,6),
     exhibitionVideo: "",
-    exhibitionPhotos: [],
+    exhibitionPhotos: studioCommunityPhotos,
     testimonials: [],
   },
 };

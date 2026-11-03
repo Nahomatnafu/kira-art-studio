@@ -16,8 +16,15 @@ import {
   Users,
 } from "lucide-react";
 import { readContent } from "@/lib/store";
-import { artistPortrait, biography, tagline } from "@/lib/content";
+import {
+  artistPortrait,
+  artistStudioPortrait,
+  biography,
+  tagline,
+} from "@/lib/content";
 import Gallery from "@/components/Gallery";
+import ArtworkImage from "@/components/ArtworkImage";
+import PhotoGallery from "@/components/PhotoGallery";
 import InquiryForm from "@/components/InquiryForm";
 import SocialLinks from "@/components/SocialLinks";
 import { getStudioContacts } from "@/lib/content";
@@ -74,12 +81,7 @@ export default async function Page({
           <PageHeading eyebrow="" title="The Artist Behind the Canvas" />
           <div className="about-grid">
             <div className="about-portrait">
-              <img
-                src={c.settings.portrait || artistPortrait}
-                alt="Kirubel Mikael, known as Kira, beside his artwork"
-                width={1080}
-                height={836}
-              />
+              <div className="about-photo-frame"><ArtworkImage imageKey="about.artist" src={c.settings.aboutPortrait || artistStudioPortrait} alt="Kirubel Mikael in his studio, surrounded by his paintings" fit="contain" /></div>
               <div className="about-caption">
                 <span>SELF-TAUGHT VISUAL ARTIST</span>
                 <span>{c.settings.location}</span>
@@ -141,10 +143,6 @@ export default async function Page({
             Have something in mind?
           </Link>
         </div>
-        <p className="preview-note">
-          Preview collection: images are temporary concepts. Final artwork,
-          stories, and five-work selection will be confirmed with the artist.
-        </p>
       </section>
     );
   if (section === "collections")
@@ -162,10 +160,7 @@ export default async function Page({
             >
               <div className="collection-large-image">
                 {x.image ? (
-                  <img
-                    src={x.image}
-                    alt={"Temporary concept cover for " + x.title}
-                  />
+                  <ArtworkImage imageKey={"collection:"+x.id} src={x.image} alt={x.title} fit="cover" />
                 ) : (
                   <Palette size={80} strokeWidth={0.7} />
                 )}
@@ -180,6 +175,13 @@ export default async function Page({
             </Link>
           ))}
         </div>
+        <PhotoGallery
+          photos={c.settings.collectionPhotos}
+          groupKey="collections"
+          title="Art & Community"
+          initialCount={3}
+          moreLink="/exhibitions#photo-gallery"
+        />
       </section>
     );
   if (section === "commissions")
@@ -192,14 +194,7 @@ export default async function Page({
             story.
           </PageHeading>
           <div className="commission-intro">
-            <img
-              src={c.settings.studioImage || "/images/coffee.webp"}
-              alt={
-                c.settings.studioImage
-                  ? "The artist’s studio"
-                  : "Temporary concept artwork for the commission page"
-              }
-            />
+            <div className="commission-photo-frame"><ArtworkImage imageKey="commissions.studio" src={c.settings.studioImage || "/images/kira-artist-02.jpg"} alt="The artist’s studio" fit="cover" /></div>
             <div>
               <h2>The Commission Process</h2>
               <p>
@@ -279,6 +274,7 @@ export default async function Page({
               )
               .map((e) => (
                 <article id={e.id} key={e.id} className="event-detail">
+                  {e.image && <div className="event-photo-frame"><ArtworkImage imageKey={"event:"+e.id} src={e.image} alt={e.title} fit="cover" /></div>}
                   <span className="event-full-date">
                     {new Date(e.date + "T12:00:00").toLocaleDateString(
                       "en-US",
@@ -315,28 +311,7 @@ export default async function Page({
             )}
           </div>
         </div>
-        <div className="section-top previous-heading">
-          <div>
-            <h2>Previous Exhibitions</h2>
-          </div>
-        </div>
-        <div className="previous-gallery">
-          {c.settings.exhibitionPhotos.length
-            ? c.settings.exhibitionPhotos.map((p, i) => (
-                <img
-                  key={p}
-                  src={p}
-                  alt={"Previous exhibition photograph " + (i + 1)}
-                  loading="lazy"
-                />
-              ))
-            : [1, 2, 3].map((i) => (
-                <div key={i} className="photo-placeholder">
-                  <h3>Seattle exhibition</h3>
-                  <p>Photos upload soon</p>
-                </div>
-              ))}
-        </div>
+        <PhotoGallery groupKey="exhibitions" photos={c.settings.exhibitionPhotos} title="Previous Exhibitions"/>
         {c.events.some(
           (e) => e.published && e.date < new Date().toISOString().slice(0, 10),
         ) && (
@@ -349,6 +324,7 @@ export default async function Page({
               )
               .map((e) => (
                 <article key={e.id}>
+                  {e.image && <div className="event-photo-frame"><ArtworkImage imageKey={"event:"+e.id} src={e.image} alt={e.title} fit="cover" /></div>}
                   <h3>{e.title}</h3>
                   <p>
                     {e.date} · {e.location}
@@ -365,11 +341,7 @@ export default async function Page({
       <>
         <section className="community-page-hero">
           {c.settings.communityImage && (
-            <img
-              className="community-hero-image"
-              src={c.settings.communityImage}
-              alt="The Kira art community"
-            />
+            <div className="community-hero-image"><ArtworkImage imageKey="community.hero" src={c.settings.communityImage} alt="The Kira art community" fit="cover" /></div>
           )}
           <h1>Community &amp; Future Vision</h1>
           <p>
@@ -435,6 +407,7 @@ export default async function Page({
             </div>
             <InquiryForm kind="community" />
           </div>
+          <PhotoGallery groupKey="community" photos={c.settings.communityPhotos} title="Art & Community" initialCount={3} moreLink="/exhibitions#photo-gallery"/>
         </section>
       </>
     );
