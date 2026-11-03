@@ -2,10 +2,8 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
-  ArrowUpRight,
   Check,
   ChevronRight,
-  ExternalLink,
   Eye,
   ImageIcon,
   Layers,
@@ -346,7 +344,6 @@ export default function Admin({
               )}
               <button className="button button-dark" disabled={busy}>
                 {busy ? "Signing in…" : "Enter the studio"}
-                <ArrowUpRight size={17} />
               </button>
             </form>
           ) : (
@@ -355,7 +352,7 @@ export default function Admin({
                 className="button button-dark"
                 onClick={() => setPreview(true)}
               >
-                Explore dashboard preview <ArrowUpRight size={17} />
+                Explore dashboard preview
               </button>
               <p className="small-note">
                 Setup required: Neon database, secure admin password, session
@@ -364,7 +361,7 @@ export default function Admin({
             </>
           )}
           <Link href="/" className="text-link">
-            Back to the website <ArrowUpRight size={15} />
+            Back to the website
           </Link>
         </div>
       </section>
@@ -416,7 +413,7 @@ export default function Admin({
           <span>STUDIO / {tab.toUpperCase()}</span>
           <div className="admin-topline-actions">
             <Link href="/" target="_blank" className="text-link">
-              View website <ExternalLink size={14} />
+              View website
             </Link>
             <button
               className="icon-button mobile-signout"
@@ -533,7 +530,7 @@ export default function Admin({
                     className="text-link"
                     onClick={() => changeTab("Artwork")}
                   >
-                    Manage all <ArrowUpRight size={15} />
+                    Manage all
                   </button>
                 </div>
                 {content.artworks.slice(0, 4).map((a) => (
@@ -724,7 +721,7 @@ export default function Admin({
                         })
                       }
                     >
-                      Edit collection <ArrowUpRight size={15} />
+                      Edit collection
                     </button>
                     <button
                       aria-label={"Delete " + x.title}

@@ -1,6 +1,6 @@
 # KIRA Art Studio
 
-An eight-page, responsive Next.js website and protected studio dashboard. React, TypeScript, locally hosted Lato and Cormorant Garamond, Neon Postgres, Vercel Blob, and Resend. No Squarespace dependency.
+An eight-page, responsive Next.js website and protected studio dashboard. React, TypeScript, locally hosted Source Sans 3 (medium body weight) and Cormorant Garamond, Neon Postgres, Vercel Blob, and Resend. No Squarespace dependency.
 
 ## Run locally
 
@@ -41,7 +41,7 @@ The current dashboard uses one studio administrator password. It is suitable for
 
 - Replace all temporary generated images with the client's actual artwork and approved photos. The five-work sample selection is provisional. Three supplied catalog prices/sizes are prefilled; the other details are explicitly pending. Toggle off “Temporary placeholder image” after replacing each work.
 - Confirm the November 7, 2026 Portland event's name, time, venue/address, and ticket URL before marking it confirmed. The seed retains the user's supplied event name and displays “Details being confirmed.” Past events move into the past-events section automatically.
-- Add approved Seattle testimonials; none were invented. Add the actual email, text number, Instagram, TikTok, and Facebook URLs. Blank contact fields do not create made-up destinations.
+- Add approved Seattle testimonials; none were invented. The supplied studio email, phone/text number, Instagram, and TikTok links are populated. Confirm these business details before launch. Instagram and TikTok use linked icons; Facebook is not displayed.
 - Confirm inquiry confirmation copy and data handling wording with the client. Test actual Resend delivery with the verified domain.
 - Review all pages on desktop/mobile. The sample site intentionally uses `noindex`; change robots metadata in `app/layout.tsx` after final content is approved, and add the real canonical domain and sitemap.
 - The watermark is a visual overlay, not image theft protection. Screenshots and direct-image downloads cannot be prevented. Use pre-watermarked derivatives if durable watermarking is needed.
@@ -61,3 +61,7 @@ The smoke test starts an isolated local dev server on port 3187, uses an ephemer
 ## Deploy
 
 Import the `kira-art-studio` GitHub repo into Vercel, keep framework detection set to Next.js, configure environment variables, and deploy. Every push to the linked branch can create a deployment. This repository is portable and includes a committed lockfile for reproducible installs.
+
+## Branding and reference copy
+
+The supplied horizontal logo is used on desktop; the supplied vertical logo is used at mobile widths and for the favicon. Both originals are preserved without image edits. Public section headings, descriptions, and action labels follow the supplied reference screenshots; decorative numbering and diagonal arrows have been removed. The catalog keeps the five media categories and supplied artwork records from the detailed page brief.

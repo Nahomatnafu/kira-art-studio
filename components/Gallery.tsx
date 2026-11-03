@@ -107,7 +107,7 @@ export default function Gallery({
               setAvailability("all");
             }}
           >
-            Explore all works ↗
+            Explore all works
           </button>
         </div>
       )}

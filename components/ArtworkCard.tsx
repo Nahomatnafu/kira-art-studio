@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import { Artwork, money } from "@/lib/content";
 export default function ArtworkCard({ artwork: a }: { artwork: Artwork }) {
   return (
@@ -30,7 +29,6 @@ export default function ArtworkCard({ artwork: a }: { artwork: Artwork }) {
           <p>{a.materials}</p>
           <small>{a.dimensions}</small>
         </div>
-        <ArrowUpRight size={19} />
       </Link>
       <span className="artwork-price">
         {a.status === "sold" ? "In a private collection" : money(a.price)}

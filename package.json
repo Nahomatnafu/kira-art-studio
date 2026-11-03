@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.3.0",
-    "@fontsource/lato": "^5.3.0",
+    "@fontsource/source-sans-3": "^5.3.1",
     "@neondatabase/serverless": "^1.2.0",
     "@vercel/blob": "^2.8.2",
     "lucide-react": "^1.66.0",

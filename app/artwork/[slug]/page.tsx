@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Check } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 import { readContent } from "@/lib/store";
 import { money } from "@/lib/content";
 import ArtworkCard from "@/components/ArtworkCard";
@@ -89,14 +89,14 @@ export default async function ArtworkDetail({
           </dl>
           {a.status === "sold" ? (
             <Link className="button button-dark" href="/commissions">
-              Commission something personal <ArrowUpRight size={18} />
+              Commission something personal
             </Link>
           ) : (
             <Link
               className="button button-dark"
               href={"/contact?artwork=" + encodeURIComponent(a.title)}
             >
-              Inquire about this artwork <ArrowUpRight size={18} />
+              Inquire about this artwork
             </Link>
           )}
           <div className="detail-notes">
@@ -126,7 +126,7 @@ export default async function ArtworkDetail({
           <h2>More stories on canvas.</h2>
         </div>
         <Link href="/artwork" className="text-link">
-          View all works <ArrowUpRight size={17} />
+          View all works
         </Link>
       </div>
       <div className="artwork-grid related-grid">

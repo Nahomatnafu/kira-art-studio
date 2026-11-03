@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ArrowUpRight, Check, Upload } from "lucide-react";
+import { Check, Upload } from "lucide-react";
 export default function InquiryForm({
   kind = "contact",
   initialMessage = "",
@@ -45,7 +45,7 @@ export default function InquiryForm({
             setStatus("");
           }}
         >
-          Send another message <ArrowUpRight size={16} />
+          Send another message
         </button>
       </div>
     );
@@ -178,7 +178,6 @@ export default function InquiryForm({
             : kind === "experience"
               ? "Share your experience"
               : "Send message"}
-        <ArrowUpRight size={17} />
       </button>
     </form>
   );

@@ -6,7 +6,7 @@ export default function NotFound() {
       <h1>This page isn’t here.</h1>
       <p>Let’s find your way back to the artwork.</p>
       <Link className="button button-dark" href="/artwork">
-        Explore the gallery ↗
+        Explore the gallery
       </Link>
     </section>
   );

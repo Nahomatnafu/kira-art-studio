@@ -114,6 +114,21 @@ export const biography = [
   "For me, art is more than creating beautiful images. It is a way to preserve memories, celebrate cultural identity, express emotions, and give a voice to stories that deserve to be seen and remembered.",
   "Through Kira Art Studio, my vision is to create meaningful artwork that connects people across cultures and generations, inspires conversations, and reminds us of the beauty and strength within our shared humanity.",
 ];
+export const studioContact = {
+  email: "Kirubel@kiraartstudio.com",
+  phone: "+1 (503) 348-4653",
+  instagram: "https://www.instagram.com/kirubel_art/",
+  tiktok: "https://www.tiktok.com/@kira.art.studio5",
+};
+export function getStudioContacts(settings: Content["settings"]) {
+  return {
+    ...settings,
+    email: settings.email || studioContact.email,
+    phone: settings.phone || studioContact.phone,
+    instagram: settings.instagram || studioContact.instagram,
+    tiktok: settings.tiktok || studioContact.tiktok,
+  };
+}
 export const seed: Content = {
   revision: 0,
   artworks: [
@@ -258,11 +273,11 @@ export const seed: Content = {
   ],
   settings: {
     heroImage: "/images/hero-art.webp",
-    email: "",
-    phone: "",
+    email: studioContact.email,
+    phone: studioContact.phone,
     location: "Portland, Oregon",
-    instagram: "",
-    tiktok: "",
+    instagram: studioContact.instagram,
+    tiktok: studioContact.tiktok,
     facebook: "",
     portrait: "",
     studioImage: "",

@@ -1,9 +1,9 @@
 import Link from "next/link";
 import {
-  ArrowDown,
-  ArrowUpRight,
   Brush,
   Heart,
+  Mail,
+  MapPin,
   MessageCircle,
   Package,
   Palette,
@@ -12,24 +12,23 @@ import {
   Sprout,
 } from "lucide-react";
 import { readContent } from "@/lib/store";
-import { tagline } from "@/lib/content";
+import { getStudioContacts, tagline } from "@/lib/content";
 import ArtworkCard from "@/components/ArtworkCard";
+import SocialLinks from "@/components/SocialLinks";
 export default async function Home() {
   const c = await readContent();
+  const contact = getStudioContacts(c.settings);
   return (
     <>
       <section className="hero">
         <img
           className="hero-image"
           src={c.settings.heroImage || "/images/hero-art.webp"}
-          alt="Warm ochre concept painting of an East African woman in profile"
+          alt="Painting of an East African woman in profile"
           fetchPriority="high"
         />
         <div className="hero-shade" />
         <div className="hero-content">
-          <span className="eyebrow light">
-            <span className="little-line" /> STORIES TOLD IN COLOR
-          </span>
           <h1>
             Art.
             <br />
@@ -43,30 +42,22 @@ export default async function Home() {
             connection.
           </p>
           <Link className="button button-light" href="/artwork">
-            Explore artwork <ArrowUpRight size={18} />
+            Explore Artwork
           </Link>
-        </div>
-        <div className="hero-bottom">
-          <span>ETHIOPIAN ROOTS. UNIVERSAL STORIES.</span>
-          <a href="#featured" aria-label="Scroll to featured artwork">
-            DISCOVER THE STUDIO <ArrowDown size={15} />
-          </a>
-          <span className="hero-placeholder">Concept image · replaceable</span>
         </div>
       </section>
       <section id="featured" className="section">
         <div className="section-top">
           <div>
-            <span className="eyebrow">SELECTED WORKS / 01</span>
-            <h2>Stories on canvas.</h2>
+            <h2>Featured Artwork</h2>
             <p>
-              A collection of original paintings rooted in culture,
-              <br className="desktop-break" /> memory, and the beauty of being
-              human.
+              A collection of original paintings inspired by African identity,
+              <br className="desktop-break" /> cultural memory, and human
+              connection.
             </p>
           </div>
           <Link className="button button-outline" href="/artwork">
-            View full gallery <ArrowUpRight size={16} />
+            View Full Gallery
           </Link>
         </div>
         <div className="artwork-grid">
@@ -84,48 +75,40 @@ export default async function Home() {
             src={c.settings.portrait || "/images/women.webp"}
             alt={
               c.settings.portrait
-                ? "The artist behind Kira Art Studio"
+                ? "Kirubel Mikael, known as Kira"
                 : "Temporary artwork, awaiting the artist’s portrait"
             }
             loading="lazy"
           />
-          {!c.settings.portrait && (
-            <span className="image-note">Artist portrait to follow</span>
-          )}
         </div>
         <div className="artist-story">
-          <span className="eyebrow">MEET THE ARTIST / 02</span>
-          <h2>
-            The artist behind
-            <br />
-            the canvas.
-          </h2>
+          <h2>About the Artist</h2>
           <p>
-            I am a self-taught visual artist inspired by Ethiopian, Eritrean,
-            and African culture, history, identity, and everyday life.
+            I'm Kirubel Mikael, known as Kira, a visual artist based in
+            Portland, Oregon. My work explores African identity, cultural
+            memory, and human connection through bold colors, expressive
+            figures, and cultural patterns rooted in Ethiopian and East African
+            heritage.
           </p>
           <p>
-            Through painting, I preserve memories, celebrate our shared
-            humanity, and give a voice to stories that deserve to be seen and
-            remembered.
+            I create art to celebrate our stories, our people, and our shared
+            humanity. Through painting, I aim to build bridges between culture,
+            community, and future generations.
           </p>
           <Link href="/about" className="text-link">
-            Read my story <ArrowUpRight size={18} />
+            Read Full Story
           </Link>
-          <span className="signature">Kira</span>
         </div>
         <div className="pattern-strip" aria-hidden="true" />
       </section>
       <section className="section collections-section">
         <div className="section-top">
           <div>
-            <span className="eyebrow">THE COLLECTIONS / 03</span>
-            <h2>Many mediums. One story.</h2>
-            <p>Different ways to express the things that connect us.</p>
+            <h2>Explore Collections</h2>
+            <p>
+              Different themes, same story — people, culture, and connection.
+            </p>
           </div>
-          <Link href="/collections" className="text-link">
-            Explore collections <ArrowUpRight size={18} />
-          </Link>
         </div>
         <div className="collection-home-grid">
           {c.collections.map((x, i) => (
@@ -138,7 +121,7 @@ export default async function Home() {
                 {x.image ? (
                   <img
                     src={x.image}
-                    alt={x.title + " concept cover"}
+                    alt={x.title + " collection cover"}
                     loading="lazy"
                   />
                 ) : (
@@ -155,16 +138,11 @@ export default async function Home() {
                   </span>
                 )}
                 {x.comingSoon && (
-                  <span className="coming-soon">Coming soon</span>
+                  <span className="coming-soon">Coming Soon</span>
                 )}
               </div>
-              <h3>
-                {x.title}
-                <ArrowUpRight size={17} />
-              </h3>
-              <span>
-                {x.comingSoon ? "A new chapter, on its way" : "View collection"}
-              </span>
+              <h3>{x.title}</h3>
+              <span>View Collection</span>
             </Link>
           ))}
         </div>
@@ -180,56 +158,45 @@ export default async function Home() {
             }
             loading="lazy"
           />
-          <span className="image-note">
-            {!c.settings.studioImage ? "Studio image to follow" : ""}
-          </span>
         </div>
         <div className="commission-copy">
-          <span className="eyebrow">MADE JUST FOR YOU / 04</span>
-          <h2>
-            Your story.
-            <br />
-            An original painting.
-          </h2>
+          <h2>Commission a Painting</h2>
           <p>
-            For your home, your space, or someone you love.
-            <br />
-            Let’s create something meaningful together.
+            Looking for a custom piece for your home, office, or community
+            space? I create original artwork based on your vision, space, and
+            story.
           </p>
           <div className="process-mini">
             {[
-              [MessageCircle, "01", "Inquiry"],
-              [Users, "02", "Discussion"],
-              [Brush, "03", "Creation"],
-              [Package, "04", "Delivery"],
-            ].map(([Icon, n, label]) => {
+              [Mail, "Inquiry", "Send your idea"],
+              [MessageCircle, "Discussion", "We plan together"],
+              [Brush, "Creation", "Artwork in progress"],
+              [Package, "Delivery", "Your custom artwork"],
+            ].map(([Icon, label, description]) => {
               const I = Icon as typeof Brush;
               return (
-                <div key={String(n)}>
-                  <I size={24} strokeWidth={1.3} />
-                  <small>
-                    {String(n)} / {String(label)}
-                  </small>
+                <div key={String(label)}>
+                  <I size={25} strokeWidth={1.5} />
+                  <small>{String(label)}</small>
+                  <span>{String(description)}</span>
                 </div>
               );
             })}
           </div>
           <Link href="/commissions" className="button button-dark">
-            Commission a painting <ArrowUpRight size={17} />
+            Get Started
           </Link>
         </div>
       </section>
       <section className="section events-home">
         <div>
-          <span className="eyebrow">BEYOND THE CANVAS / 05</span>
-          <h2>Art, out in the world.</h2>
+          <h2>Exhibitions &amp; Events</h2>
           <p>
-            Exhibitions, gatherings, and moments
-            <br />
-            of connection through art.
+            Recent and upcoming shows, community events,
+            <br className="desktop-break" /> and art collaborations.
           </p>
           <Link href="/exhibitions" className="text-link">
-            Exhibitions & events <ArrowUpRight size={18} />
+            View Details
           </Link>
         </div>
         <div className="event-preview-list">
@@ -255,62 +222,81 @@ export default async function Home() {
                   <strong>{Number(x.date.slice(-2))}</strong>
                 </div>
                 <div>
-                  <span className="eyebrow">
-                    {x.confirmed
-                      ? "UPCOMING EXHIBITION"
-                      : "DETAILS BEING CONFIRMED"}
-                  </span>
+                  {!x.confirmed && (
+                    <span className="eyebrow">DETAILS BEING CONFIRMED</span>
+                  )}
                   <h3>{x.title}</h3>
                   <p>
                     {x.location.split(" · ")[0]} · {x.time}
                   </p>
                 </div>
-                <ArrowUpRight size={21} />
               </Link>
             ))}
         </div>
       </section>
       <section className="community-band">
         <div>
-          <span className="eyebrow light">ART BELONGS TO EVERYONE / 06</span>
-          <h2>
-            A studio. A community.
-            <br />
-            <em>A world of possibility.</em>
-          </h2>
+          <h2>Community &amp; Future Vision</h2>
           <p>
-            A vision for a welcoming place to create, learn, and celebrate
-            culture.
-            <br />
-            From free youth art activities to shared creative adventures.
+            With a $25,000 goal, I plan to open a free art space for youth and
+            families — a place for creativity, mentorship, and cultural
+            education.
           </p>
           <Link href="/community" className="button button-light">
-            Discover the vision <ArrowUpRight size={17} />
+            Learn More
           </Link>
         </div>
         <div className="community-pillars">
           {[
-            [Users, "Youth & creativity"],
-            [GraduationCap, "Art education"],
-            [Heart, "Community connection"],
-            [Sprout, "Cultural preservation"],
+            [Users, "Youth Programs"],
+            [GraduationCap, "Art Education"],
+            [Heart, "Community Events"],
+            [Sprout, "Cultural Preservation"],
           ].map(([Icon, label]) => {
             const I = Icon as typeof Heart;
             return (
               <div key={String(label)}>
-                <I size={27} strokeWidth={1.2} />
+                <I size={27} strokeWidth={1.5} />
                 <span>{String(label)}</span>
               </div>
             );
           })}
         </div>
       </section>
+      <section className="home-contact-band">
+        <div>
+          <h2>Let’s Connect</h2>
+          <p>
+            For commissions, collaborations, or any questions,
+            <br className="desktop-break" /> feel free to reach out.
+          </p>
+          <a href={"mailto:" + contact.email} className="home-contact-line">
+            <Mail size={17} />
+            {contact.email}
+          </a>
+          <a
+            href={"tel:" + contact.phone.replace(/[^+\d]/g, "")}
+            className="home-contact-line"
+          >
+            {contact.phone}
+          </a>
+          <span className="home-contact-line">
+            <MapPin size={17} />
+            {contact.location}
+          </span>
+          <SocialLinks instagram={contact.instagram} tiktok={contact.tiktok} />
+          <Link href="/contact" className="button button-outline">
+            Send a Message
+          </Link>
+        </div>
+        <img
+          src={c.settings.studioImage || "/images/coffee.webp"}
+          alt="Studio still life"
+          loading="lazy"
+        />
+      </section>
       <section className="closing-quote">
-        <span className="eyebrow">THE SPIRIT OF KIRA</span>
         <p>{tagline}</p>
-        <Link className="text-link" href="/contact">
-          Let’s connect <ArrowUpRight size={18} />
-        </Link>
       </section>
     </>
   );

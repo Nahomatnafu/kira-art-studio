@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Header, Footer } from "@/components/Shell";
 import { readContent } from "@/lib/store";
+import { getStudioContacts } from "@/lib/content";
 import "./globals.css";
 export const metadata: Metadata = {
   title: {
@@ -23,7 +24,7 @@ export default async function RootLayout({
       <body>
         <Header
           artworks={content.artworks.filter((a) => a.published)}
-          instagram={content.settings.instagram}
+          instagram={getStudioContacts(content.settings).instagram}
         />
         <main id="main">{children}</main>
         <Footer settings={content.settings} />

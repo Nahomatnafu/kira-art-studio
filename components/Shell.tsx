@@ -2,8 +2,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Camera, Menu, Search, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import type { Artwork, Content } from "@/lib/content";
+import { getStudioContacts } from "@/lib/content";
+import SocialLinks, { InstagramIcon } from "./SocialLinks";
 const nav = [
   ["Home", "/"],
   ["About", "/about"],
@@ -15,10 +17,18 @@ const nav = [
 ];
 export function Logo() {
   return (
-    <span className="wordmark">
-      <span>KIRA</span>
-      <small>ART STUDIO</small>
-    </span>
+    <picture className="brand-logo">
+      <source
+        media="(max-width: 640px)"
+        srcSet="/images/kira-logo-vertical.jpg"
+      />
+      <img
+        src="/images/kira-logo-horizontal.jpg"
+        alt="Kira Art Studio"
+        width={190}
+        height={95}
+      />
+    </picture>
   );
 }
 export function Header({
@@ -112,7 +122,7 @@ export function Header({
               rel="noreferrer"
               aria-label="Instagram"
             >
-              <Camera size={18} />
+              <InstagramIcon size={18} />
             </a>
           )}
           <button
@@ -179,7 +189,6 @@ export function Header({
                       {a.title}
                       <small>{a.materials}</small>
                     </span>
-                    <ArrowUpRight size={20} />
                   </Link>
                 ))}
               {!artworks.some(
@@ -197,6 +206,7 @@ export function Header({
   );
 }
 export function Footer({ settings }: { settings: Content["settings"] }) {
+  const contact = getStudioContacts(settings);
   return (
     <footer className="site-footer">
       <div className="footer-top">
@@ -204,11 +214,6 @@ export function Footer({ settings }: { settings: Content["settings"] }) {
           <Link href="/" aria-label="KIRA Art Studio home">
             <Logo />
           </Link>
-          <p>
-            Art rooted in culture.
-            <br />
-            Stories that connect us.
-          </p>
         </div>
         <div className="footer-links">
           {nav.slice(1).map(([label, href]) => (
@@ -219,36 +224,18 @@ export function Footer({ settings }: { settings: Content["settings"] }) {
           <Link href="/collections">Collections</Link>
         </div>
         <div className="footer-invitation">
-          <span className="eyebrow">LET’S MAKE A CONNECTION</span>
-          <Link href="/contact">
-            Start a conversation <ArrowUpRight size={22} />
-          </Link>
+          <span className="eyebrow">LET’S CONNECT</span>
+          <Link href="/contact">Send a Message</Link>
           <p>{settings.location}</p>
-          <div className="social-links">
-            {settings.instagram && (
-              <a href={settings.instagram} target="_blank" rel="noreferrer">
-                Instagram ↗
-              </a>
-            )}
-            {settings.tiktok && (
-              <a href={settings.tiktok} target="_blank" rel="noreferrer">
-                TikTok ↗
-              </a>
-            )}
-            {settings.facebook && (
-              <a href={settings.facebook} target="_blank" rel="noreferrer">
-                Facebook ↗
-              </a>
-            )}
-          </div>
+          <SocialLinks instagram={contact.instagram} tiktok={contact.tiktok} />
         </div>
       </div>
       <div className="footer-bottom">
         <span>
           © {new Date().getFullYear()} Kira Art Studio. All rights reserved.
         </span>
-        <span>Original stories. Lasting connections.</span>
-        <Link href="/admin">Studio login ↗</Link>
+        <span>Original artwork. Do not reproduce without permission.</span>
+        <Link href="/admin">Studio login </Link>
       </div>
     </footer>
   );

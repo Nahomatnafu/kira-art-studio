@@ -1,5 +1,5 @@
-@import "@fontsource/lato/400.css";
-@import "@fontsource/lato/700.css";
+@import "@fontsource/source-sans-3/500.css";
+@import "@fontsource/source-sans-3/700.css";
 @import "@fontsource/cormorant-garamond/400.css";
 @import "@fontsource/cormorant-garamond/500.css";
 @import "@fontsource/cormorant-garamond/400-italic.css";
@@ -9,11 +9,11 @@
   --ink: #29221d;
   --brown: #271a13;
   --rust: #88452c;
-  --muted: #756e66;
+  --muted: #5e554d;
   --line: #ded7ce;
   --sand: #eee8df;
   --serif: "Cormorant Garamond", Georgia, serif;
-  --sans: "Lato", Arial, sans-serif;
+  --sans: "Source Sans 3", Arial, sans-serif;
 }
 * {
   box-sizing: border-box;
@@ -3598,5 +3598,266 @@ select:focus {
 @media (max-width: 640px) {
   .mobile-signout {
     display: inline-flex;
+  }
+}
+
+/* Reference-aligned branding and stronger body typography. */
+body {
+  font-weight: 500;
+  font-size: 15px;
+}
+.site-header {
+  height: 112px;
+}
+.brand-logo {
+  display: block;
+  width: 190px;
+  height: 95px;
+  flex-shrink: 0;
+}
+.brand-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.main-nav {
+  font-size: 13px;
+}
+.site-header .social-header {
+  display: inline-flex;
+}
+.hero-content {
+  padding-top: 115px;
+}
+.hero-content > p {
+  font-size: 16px;
+}
+.artist-story p,
+.commission-copy p,
+.biography p,
+.contact-info > p,
+.page-heading > p {
+  font-size: 16px;
+  color: var(--muted);
+}
+.artist-story {
+  padding-bottom: 55px;
+}
+.section-top p,
+.community-band p {
+  font-size: 15px;
+}
+.process-mini small {
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+.process-mini > div > span {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.process-number {
+  justify-content: flex-start;
+}
+.social-links,
+.contact-socials {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid currentColor;
+  color: var(--rust);
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.social-icon:hover {
+  background: var(--rust);
+  color: var(--paper);
+}
+.site-footer .social-icon {
+  color: #e0c8ab;
+  width: 35px;
+  height: 35px;
+}
+.site-footer .social-icon:hover {
+  color: var(--brown);
+  background: #e0c8ab;
+}
+.contact-socials {
+  margin-top: 27px;
+}
+.contact-details > a,
+.contact-details > div {
+  font-size: 16px;
+}
+.contact-details span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.text-message-link {
+  margin-left: auto;
+  font-size: 12px;
+  border-bottom: 1px solid var(--line);
+  padding: 5px 0;
+}
+.home-contact-band {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--sand);
+  max-width: 1600px;
+  margin: auto;
+}
+.home-contact-band > div {
+  padding: 55px 12%;
+}
+.home-contact-band > img {
+  width: 100%;
+  height: 100%;
+  max-height: 470px;
+  object-fit: cover;
+}
+.home-contact-band p {
+  font-size: 15px;
+}
+.home-contact-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  margin: 8px 0;
+}
+.home-contact-band .social-links {
+  margin: 17px 0 25px;
+}
+.home-contact-band .button {
+  margin-top: 6px;
+}
+.photo-placeholder {
+  justify-content: center;
+}
+.page-heading {
+  max-width: 1050px;
+}
+@media (max-width: 1100px) {
+  .brand-logo {
+    width: 165px;
+    height: 83px;
+  }
+  .main-nav {
+    gap: 17px;
+    margin-right: 22px;
+  }
+  .artist-story p,
+  .commission-copy p {
+    font-size: 14px;
+  }
+}
+@media (max-width: 900px) {
+  .main-nav {
+    display: none;
+    position: absolute;
+    top: 112px;
+    left: 0;
+    right: 0;
+    background: var(--brown);
+    margin: 0;
+    padding: 25px 7% 35px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    box-shadow: 0 15px 20px #0002;
+  }
+  .main-nav.open {
+    display: flex;
+  }
+  .main-nav a {
+    font: 30px var(--serif);
+    width: 100%;
+    padding: 9px 0;
+  }
+  .menu-toggle {
+    display: flex;
+  }
+  .header-actions {
+    gap: 10px;
+  }
+}
+@media (max-width: 640px) {
+  .brand-logo {
+    width: 94px;
+    height: 94px;
+  }
+  .site-header {
+    height: 112px;
+  }
+  .hero {
+    max-height: calc(100svh - 112px);
+  }
+  .hero-content {
+    padding-top: 85px;
+  }
+  .hero-content > p {
+    font-size: 15px;
+  }
+  .artist-story p,
+  .commission-copy p,
+  .biography p,
+  .contact-info > p,
+  .page-heading > p {
+    font-size: 15px;
+  }
+  .section-top p,
+  .community-band p {
+    font-size: 14px;
+  }
+  .process-mini {
+    gap: 12px;
+  }
+  .process-mini small {
+    font-size: 11px;
+  }
+  .process-mini > div > span {
+    font-size: 10px;
+  }
+  .home-contact-band {
+    grid-template-columns: 1fr;
+  }
+  .home-contact-band > div {
+    padding: 43px 7%;
+  }
+  .home-contact-band > img {
+    height: 280px;
+    object-position: center 55%;
+  }
+  .contact-details > a,
+  .contact-details > div {
+    font-size: 15px;
+  }
+  .inquiry-form label {
+    font-size: 12px;
+  }
+  .inquiry-form input,
+  .inquiry-form select,
+  .inquiry-form textarea {
+    font-size: 14px;
+  }
+  .footer-top .brand-logo {
+    width: 94px;
+    height: 94px;
+  }
+  .community-page-hero h1 {
+    font-size: 54px;
+  }
+  .voices-placeholder > span {
+    display: none;
   }
 }

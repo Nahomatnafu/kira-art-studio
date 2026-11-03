@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  ArrowUpRight,
   Brush,
   Check,
   GraduationCap,
@@ -20,6 +19,8 @@ import { readContent } from "@/lib/store";
 import { biography, tagline } from "@/lib/content";
 import Gallery from "@/components/Gallery";
 import InquiryForm from "@/components/InquiryForm";
+import SocialLinks from "@/components/SocialLinks";
+import { getStudioContacts } from "@/lib/content";
 const titles: Record<string, string> = {
   about: "About the Artist",
   collections: "Explore Collections",
@@ -27,7 +28,7 @@ const titles: Record<string, string> = {
   commissions: "Commission a Painting",
   exhibitions: "Exhibitions & Events",
   community: "Community & Future Vision",
-  contact: "Let’s Connect",
+  contact: "Let’s Create Something",
 };
 export async function generateMetadata({
   params,
@@ -48,7 +49,7 @@ function PageHeading({
 }) {
   return (
     <div className="page-heading">
-      <span className="eyebrow">{eyebrow}</span>
+      {eyebrow && <span className="eyebrow">{eyebrow}</span>}
       <h1>{title}</h1>
       {children && <p>{children}</p>}
     </div>
@@ -64,23 +65,13 @@ export default async function Page({
   const { section } = await params;
   if (!titles[section]) notFound();
   const c = await readContent();
+  const contact = getStudioContacts(c.settings);
   const query = await searchParams;
   if (section === "about")
     return (
       <>
         <section className="section about-page">
-          <PageHeading
-            eyebrow="THE STORY BEHIND THE STUDIO"
-            title={
-              <>
-                The artist behind
-                <br />
-                <em>the canvas.</em>
-              </>
-            }
-          >
-            Rooted in culture. Guided by curiosity. Connected by humanity.
-          </PageHeading>
+          <PageHeading eyebrow="" title="The Artist Behind the Canvas" />
           <div className="about-grid">
             <div className="about-portrait">
               {c.settings.portrait ? (
@@ -91,9 +82,7 @@ export default async function Page({
               ) : (
                 <div className="portrait-placeholder">
                   <Brush size={55} strokeWidth={0.75} />
-                  <span className="eyebrow">
-                    A FACE BEHIND EVERY BRUSHSTROKE
-                  </span>
+
                   <h2>Meet Kira.</h2>
                   <p>Artist portrait coming soon</p>
                   <div className="pattern-strip" />
@@ -131,7 +120,7 @@ export default async function Page({
           <span className="eyebrow">WHY I CREATE</span>
           <p>{tagline}</p>
           <Link className="text-link" href="/artwork">
-            Explore my work <ArrowUpRight size={18} />
+            Explore my work
           </Link>
         </section>
       </>
@@ -139,18 +128,9 @@ export default async function Page({
   if (section === "artwork")
     return (
       <section className="section gallery-page">
-        <PageHeading
-          eyebrow="THE GALLERY"
-          title={
-            <>
-              Every canvas,
-              <br />
-              <em>a conversation.</em>
-            </>
-          }
-        >
-          Original work exploring cultural identity, memory, and human
-          connection.
+        <PageHeading eyebrow="" title="Featured Artwork">
+          A collection of original paintings inspired by African identity,
+          cultural memory, and human connection.
         </PageHeading>
         <Gallery
           content={{
@@ -166,7 +146,7 @@ export default async function Page({
             T-shirts, and tote bags inspired by selected works.
           </p>
           <Link className="text-link" href="/commissions">
-            Have something in mind? <ArrowUpRight size={16} />
+            Have something in mind?
           </Link>
         </div>
         <p className="preview-note">
@@ -178,18 +158,8 @@ export default async function Page({
   if (section === "collections")
     return (
       <section className="section">
-        <PageHeading
-          eyebrow="EXPLORE COLLECTIONS"
-          title={
-            <>
-              Many ways to create.
-              <br />
-              <em>One human story.</em>
-            </>
-          }
-        >
-          From the canvas to everyday life. Discover the evolving world of Kira
-          Art Studio.
+        <PageHeading eyebrow="" title="Explore Collections">
+          Different themes, same story — people, culture, and connection.
         </PageHeading>
         <div className="collection-page-grid">
           {c.collections.map((x, i) => (
@@ -207,16 +177,12 @@ export default async function Page({
                 ) : (
                   <Palette size={80} strokeWidth={0.7} />
                 )}
-                <span className="collection-number">0{i + 1}</span>
               </div>
               <div className="collection-large-copy">
                 <span className="eyebrow">
                   {x.comingSoon ? "COMING SOON" : "THE ORIGINALS"}
                 </span>
-                <h2>
-                  {x.title}
-                  <ArrowUpRight size={25} />
-                </h2>
+                <h2>{x.title}</h2>
                 <p>{x.description}</p>
               </div>
             </Link>
@@ -228,18 +194,10 @@ export default async function Page({
     return (
       <>
         <section className="section commission-page">
-          <PageHeading
-            eyebrow="A PERSONAL COLLABORATION"
-            title={
-              <>
-                Your story.
-                <br />
-                <em>My brushstrokes.</em>
-              </>
-            }
-          >
-            An original work of art, created around your vision, your space, and
-            what matters to you.
+          <PageHeading eyebrow="" title="Commission a Painting">
+            Looking for a custom piece for your home, office, or community
+            space? I create original artwork based on your vision, space, and
+            story.
           </PageHeading>
           <div className="commission-intro">
             <img
@@ -251,59 +209,27 @@ export default async function Page({
               }
             />
             <div>
-              <h2>
-                Let’s make something
-                <br />
-                that feels like you.
-              </h2>
+              <h2>The Commission Process</h2>
               <p>
-                Whether you’re imagining a painting for your home, a meaningful
-                gift, or an artwork for a shared space, the process begins with
-                a conversation.
-              </p>
-              <p>
-                We’ll talk about your ideas, preferred medium, size, and
-                timeline. Each piece is a collaboration, with room for the
-                unexpected beauty of making art.
+                Inquiry, discussion and quote, creation, and delivery or pickup.
               </p>
               <a href="#commission-form" className="text-link">
-                Tell me your idea <ArrowUpRight size={18} />
+                Get Started
               </a>
             </div>
           </div>
           <div className="process-full">
             {[
-              [
-                MessageCircle,
-                "01",
-                "Share your idea",
-                "Tell me about your vision, inspiration, and the story you want to tell.",
-              ],
-              [
-                Users,
-                "02",
-                "Discuss & plan",
-                "We’ll explore size, medium, timing, and a personalized quote.",
-              ],
-              [
-                Brush,
-                "03",
-                "Watch it take shape",
-                "Your original artwork comes to life, with progress shared along the way.",
-              ],
-              [
-                Package,
-                "04",
-                "Welcome it home",
-                "Arrange delivery or pickup and discuss framing options.",
-              ],
+              [MessageCircle, "01", "Inquiry", "Send your idea"],
+              [Users, "02", "Discussion", "We plan together"],
+              [Brush, "03", "Creation", "Artwork in progress"],
+              [Package, "04", "Delivery", "Your custom artwork"],
             ].map(([Icon, n, title, body]) => {
               const I = Icon as typeof Brush;
               return (
                 <div key={String(n)}>
                   <div className="process-number">
                     <I size={28} strokeWidth={1.2} />
-                    <span>{String(n)}</span>
                   </div>
                   <h3>{String(title)}</h3>
                   <p>{String(body)}</p>
@@ -313,12 +239,7 @@ export default async function Page({
           </div>
           <div id="commission-form" className="form-section">
             <div>
-              <span className="eyebrow">THE FIRST BRUSHSTROKE</span>
-              <h2>
-                What do you
-                <br />
-                <em>have in mind?</em>
-              </h2>
+              <h2>Get Started</h2>
               <p>
                 A few details are all we need to begin.
                 <br />
@@ -337,17 +258,8 @@ export default async function Page({
   if (section === "exhibitions")
     return (
       <section className="section exhibitions-page">
-        <PageHeading
-          eyebrow="ART IN GOOD COMPANY"
-          title={
-            <>
-              Beyond
-              <br />
-              <em>the canvas.</em>
-            </>
-          }
-        >
-          Exhibitions, community events, and moments that bring us together.
+        <PageHeading eyebrow="" title="Exhibitions &amp; Events">
+          Recent and upcoming shows, community events, and art collaborations.
         </PageHeading>
         <div className="exhibition-feature">
           <div className="video-placeholder">
@@ -361,19 +273,12 @@ export default async function Page({
             ) : (
               <>
                 <Play size={45} strokeWidth={1} />
-                <span className="eyebrow">FROM THE EXHIBITION FLOOR</span>
-                <h3>A closer look, coming soon.</h3>
-                <p>Video upload soon</p>
+                <h3>Upload Soon</h3>
               </>
             )}
           </div>
           <div>
-            <span className="eyebrow">UPCOMING EVENTS</span>
-            <h2>
-              Meet the work.
-              <br />
-              Share the moment.
-            </h2>
+            <h2>Upcoming Events</h2>
             {c.events
               .filter(
                 (e) =>
@@ -405,7 +310,7 @@ export default async function Page({
                       target="_blank"
                       rel="noreferrer"
                     >
-                      Event details & tickets <ArrowUpRight size={16} />
+                      Event details & tickets
                     </a>
                   )}
                 </article>
@@ -420,11 +325,7 @@ export default async function Page({
         </div>
         <div className="section-top previous-heading">
           <div>
-            <span className="eyebrow">MOMENTS TO REMEMBER</span>
-            <h2>Previous exhibitions.</h2>
-            <p>
-              From Seattle and beyond. A growing archive of art and connection.
-            </p>
+            <h2>Previous Exhibitions</h2>
           </div>
         </div>
         <div className="previous-gallery">
@@ -439,7 +340,6 @@ export default async function Page({
               ))
             : [1, 2, 3].map((i) => (
                 <div key={i} className="photo-placeholder">
-                  <span>0{i}</span>
                   <h3>Seattle exhibition</h3>
                   <p>Photos upload soon</p>
                 </div>
@@ -479,37 +379,17 @@ export default async function Page({
               alt="The Kira art community"
             />
           )}
-          <span className="eyebrow light">THE FUTURE WE IMAGINE</span>
-          <h1>
-            Art has a way
-            <br />
-            of bringing us
-            <br />
-            <em>together.</em>
-          </h1>
+          <h1>Community &amp; Future Vision</h1>
           <p>
-            A vision for a creative space where everyone belongs.
-            <br />A place for stories, culture, learning, and possibility.
+            With a $25,000 goal, I plan to open a free art space for youth and
+            families — a place for creativity, mentorship, and cultural
+            education.
           </p>
           <span className="community-giant" aria-hidden="true">
             ✺
           </span>
         </section>
         <section className="section">
-          <div className="community-intro">
-            <span className="eyebrow">A GROWING VISION</span>
-            <h2>
-              Creativity should
-              <br />
-              have an open door.
-            </h2>
-            <p>
-              Through Kira Art Studio, I hope to create free art activities for
-              young people—a welcoming place to explore ideas, express
-              themselves, and connect with cultural stories. This is a vision we
-              are building toward, one conversation at a time.
-            </p>
-          </div>
           <div className="vision-grid">
             {[
               [
@@ -572,99 +452,58 @@ export default async function Page({
       : "";
   return (
     <section className="section contact-page">
-      <PageHeading
-        eyebrow="A CONVERSATION STARTS HERE"
-        title={
-          <>
-            Let’s make
-            <br />
-            <em>a connection.</em>
-          </>
-        }
-      >
-        For artwork inquiries, commissions, collaborations, or simply to say
-        hello.
+      <PageHeading eyebrow="CONTACT ME" title="Let’s Create Something">
+        For original artwork, commissions, collaborations, and orders.
       </PageHeading>
       <div className="contact-grid">
         <div className="contact-info">
-          <h2>
-            Good stories begin
-            <br />
-            with a hello.
-          </h2>
+          <h2>Let’s Connect</h2>
           <p>
-            Have a question or an idea? I’d love to hear it.
-            <br />
-            Email and text are the best ways to reach the studio.
+            For commissions, collaborations, or any questions, feel free to
+            reach out.
           </p>
           <div className="contact-details">
-            {c.settings.email ? (
-              <a href={"mailto:" + c.settings.email}>
-                <Mail size={20} />
-                <span>
-                  <small>EMAIL</small>
-                  {c.settings.email}
-                </span>
-                <ArrowUpRight size={17} />
+            <a href={"mailto:" + contact.email}>
+              <Mail size={20} />
+              <span>
+                <small>EMAIL</small>
+                {contact.email}
+              </span>
+            </a>
+            <div className="phone-contact">
+              <Smartphone size={20} />
+              <span>
+                <small>PHONE / TEXT</small>
+                <a href={"tel:" + contact.phone.replace(/[^+\d]/g, "")}>
+                  {contact.phone}
+                </a>
+              </span>
+              <a
+                className="text-message-link"
+                href={"sms:" + contact.phone.replace(/[^+\d]/g, "")}
+                aria-label="Send a text message to Kira Art Studio"
+              >
+                Text
               </a>
-            ) : (
-              <div>
-                <Mail size={20} />
-                <span>
-                  <small>EMAIL</small>Studio email coming soon
-                </span>
-              </div>
-            )}
-            {c.settings.phone ? (
-              <a href={"sms:" + c.settings.phone.replace(/[^+\d]/g, "")}>
-                <Smartphone size={20} />
-                <span>
-                  <small>TEXT THE STUDIO</small>
-                  {c.settings.phone}
-                </span>
-                <ArrowUpRight size={17} />
-              </a>
-            ) : (
-              <div>
-                <Smartphone size={20} />
-                <span>
-                  <small>TEXT</small>Studio number coming soon
-                </span>
-              </div>
-            )}
+            </div>
             <div>
               <MapPin size={20} />
               <span>
                 <small>BASED IN</small>
-                {c.settings.location}
+                {contact.location}
               </span>
             </div>
           </div>
-          <div className="contact-socials">
-            {c.settings.instagram && (
-              <a href={c.settings.instagram} target="_blank" rel="noreferrer">
-                Instagram ↗
-              </a>
-            )}
-            {c.settings.tiktok && (
-              <a href={c.settings.tiktok} target="_blank" rel="noreferrer">
-                TikTok ↗
-              </a>
-            )}
-            {c.settings.facebook ? (
-              <a href={c.settings.facebook} target="_blank" rel="noreferrer">
-                Facebook ↗
-              </a>
-            ) : (
-              <span>Facebook · coming soon</span>
-            )}
-          </div>
+          <SocialLinks
+            className="contact-socials"
+            instagram={contact.instagram}
+            tiktok={contact.tiktok}
+          />
         </div>
         <InquiryForm key={initial} initialMessage={initial} />
       </div>
       <div className="voices-section">
-        <span className="eyebrow">VOICES FROM THE COMMUNITY</span>
-        <h2>Art stays with us.</h2>
+        <h2>Voices from the Community</h2>
         {c.settings.testimonials.some((t) => t.approved) ? (
           <div className="testimonial-grid">
             {c.settings.testimonials
@@ -683,7 +522,7 @@ export default async function Page({
         ) : (
           <div className="voices-placeholder">
             <span>“</span>
-            <p>There’s a story on both sides of the canvas.</p>
+
             <small>
               Approved voices from our Seattle exhibition will be shared here
               soon.
@@ -691,9 +530,7 @@ export default async function Page({
           </div>
         )}
         <details className="experience-form">
-          <summary>
-            Share your experience <ArrowUpRight size={18} />
-          </summary>
+          <summary>Share your experience</summary>
           <div>
             <p>
               Have you spent time with the artwork or joined an exhibition? We’d
