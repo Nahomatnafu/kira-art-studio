@@ -50,6 +50,9 @@ export const eventSchema = z.object({
   confirmed: z.boolean(),
   published: z.boolean(),
 });
+const previousInstagram = "https://www.instagram.com/kirubel_art/";
+const currentInstagram = "https://www.instagram.com/kirubel__art/";
+
 export const settingsSchema = z.object({
   pageImages:z.record(z.string().min(1).max(2100),imageSettingSchema).refine(v=>Object.keys(v).length<=700).default({}),
   homePhotos:z.array(safeUrl.refine(v=>Boolean(v),"Choose an image or remove the empty photo slot.")).max(100).refine(v=>new Set(v).size===v.length,"This gallery contains duplicate photos.").default(studioCommunityPhotos.slice(0,3)),
@@ -60,7 +63,9 @@ export const settingsSchema = z.object({
   email: z.union([z.literal(""), z.email()]),
   phone: z.string().max(40),
   location: z.string().max(150),
-  instagram: safeUrl,
+  instagram: safeUrl.transform((url) =>
+    url === previousInstagram ? currentInstagram : url,
+  ),
   tiktok: safeUrl,
   facebook: safeUrl,
   portrait: safeUrl,
@@ -122,7 +127,7 @@ export const artistStudioPortrait = "/images/kira-artist-02.jpg";
 export const studioContact = {
   email: "Kirubel@kiraartstudio.com",
   phone: "+1 (503) 348-4653",
-  instagram: "https://www.instagram.com/kirubel_art/",
+  instagram: currentInstagram,
   tiktok: "https://www.tiktok.com/@kira.art.studio5",
 };
 export function getStudioContacts<T extends Pick<Content["settings"],"email"|"phone"|"instagram"|"tiktok">>(settings: T) {

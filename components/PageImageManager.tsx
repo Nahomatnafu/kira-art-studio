@@ -3,14 +3,15 @@ import {useEffect,useState} from 'react';
 import type {Content} from '@/lib/content';
 import {artistPortrait,artistStudioPortrait} from '@/lib/content';
 import {artworkCommunityPhotos,studioCommunityPhotos} from '@/lib/media';
-import {defaultFraming,type ImageSetting} from '@/lib/image-settings';
+import {defaultFraming,studioLogo,type ImageSetting} from '@/lib/image-settings';
 import ImageEditor from './ImageEditor';
 const pages=['Home','About','Artwork','Collections','Commissions','Exhibitions & Events','Community','Contact','Shared logos'] as const;
-export default function PageImageManager({content,save,upload,busy,uploading,preview}:{
- content:Content;save:(c:Content)=>Promise<boolean>;upload:(f:File,key:string,set:(url:string)=>void)=>Promise<void>;busy:boolean;uploading:string;preview:boolean;
+export default function PageImageManager({content,save,upload,busy,uploading,preview,logosOnly=false}:{
+ content:Content;save:(c:Content)=>Promise<boolean>;upload:(f:File,key:string,set:(url:string)=>void)=>Promise<void>;busy:boolean;uploading:string;preview:boolean;logosOnly?:boolean;
 }){
  const [draft,setDraft]=useState(()=>structuredClone(content));
- const [page,setPage]=useState<typeof pages[number]>('Home');
+ const [selectedPage,setPage]=useState<typeof pages[number]>('Home');
+ const page = logosOnly ? 'Shared logos' : selectedPage;
  const [dirty,setDirty]=useState(false);
  useEffect(()=>{setDraft(structuredClone(content));setDirty(false)},[content.revision]);
  const library=[...new Map([...draft.artworks.filter(a=>a.image).map(a=>({src:a.image,label:a.title})),...studioCommunityPhotos.map((src,i)=>({src,label:'Community photo '+(i+1)})),{src:artistPortrait,label:'Artist portrait'},{src:artistStudioPortrait,label:'Artist in the studio'}].map(x=>[x.src,x])).values()];
@@ -32,8 +33,8 @@ export default function PageImageManager({content,save,upload,busy,uploading,pre
   </div><button type="button" className="button button-outline" disabled={photos.length>=100} onClick={()=>update(c=>({...c,settings:{...c.settings,[field]:[...c.settings[field],'']}}))}>Add gallery photo</button></div>;
  }
  return <div className="page-images-manager">
-  <div className="admin-panel page-image-toolbar"><label>Choose a page<select value={page} onChange={e=>setPage(e.target.value as typeof page)}>{pages.map(p=><option key={p}>{p}</option>)}</select></label><p>Framing changes affect the website after saving. Portraits start with the full image visible. Artwork and collection covers are shared wherever those records appear.</p><button type="button" className="button button-dark" disabled={busy||Boolean(uploading)||!dirty} onClick={async()=>{if(await save(draft))setDirty(false)}}>{busy?'Saving…':preview?'Save image preview':'Publish image changes'}</button><span aria-live="polite">{dirty?'Unsaved image changes':'All image changes saved'}</span></div>
-  <h2>{page}</h2>
+  <div className="admin-panel page-image-toolbar">{!logosOnly && <label>Choose a page<select value={page} onChange={e=>setPage(e.target.value as typeof selectedPage)}>{pages.map(p=><option key={p}>{p}</option>)}</select></label>}<p>{logosOnly ? "Upload a transparent PNG or WebP. The desktop logo also appears on mobile until you choose a separate mobile logo." : "Framing changes affect the website after saving. Portraits start with the full image visible. Artwork and collection covers are shared wherever those records appear."}</p><button type="button" className="button button-dark" disabled={busy||Boolean(uploading)||!dirty} onClick={async()=>{if(await save(draft))setDirty(false)}}>{busy?'Saving…':preview?'Save image preview':'Publish image changes'}</button><span aria-live="polite">{dirty?'Unsaved image changes':'All image changes saved'}</span></div>
+  {!logosOnly && <h2>{page}</h2>}
   <div className="page-image-grid">
   {page==='Home'&&<>
    {image('home.hero','Homepage hero',draft.settings.heroImage,'cover',1.8,(c,url)=>{c.settings.heroImage=url})}
@@ -45,8 +46,8 @@ export default function PageImageManager({content,save,upload,busy,uploading,pre
   {page==='Commissions'&&image('commissions.studio','Studio photograph',draft.settings.studioImage,'cover',1.2)}
   {page==='Community'&&image('community.hero','Community hero',draft.settings.communityImage,'cover',2.5,(c,url)=>{c.settings.communityImage=url})}
   {page==='Shared logos'&&<>
-   {image('brand.horizontal','Landscape logo','/images/kira-logo-horizontal.jpg','contain',2,undefined,true)}
-   {image('brand.vertical','Portrait / mobile logo','/images/kira-logo-vertical.jpg','contain',1,undefined,true)}
+   {image('brand.horizontal','Desktop logo',studioLogo,'contain',2,undefined,true)}
+   {image('brand.vertical','Mobile logo',draft.settings.pageImages['brand.horizontal']?.src || studioLogo,'contain',1,undefined,true)}
   </>}
   {(page==='Artwork'||page==='Home')&&draft.artworks.filter(a=>page==='Artwork'||a.featured).map(a=><div key={a.id}>
    {image('artwork:'+a.id,a.title,a.image,'contain',.75,(c,url)=>{const item=c.artworks.find(x=>x.id===a.id);if(item){item.image=url;item.placeholder=false}})}

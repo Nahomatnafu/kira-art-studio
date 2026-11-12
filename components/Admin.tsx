@@ -26,12 +26,13 @@ import PageImageManager from "./PageImageManager";
 import ImageEditor from "./ImageEditor";
 import {defaultFraming,type ImageSetting} from "@/lib/image-settings";
 type Tab =
-  "Pages & images" | "Overview" | "Artwork" | "Collections" | "Exhibitions" | "Studio settings";
+  "Pages & images" | "Logos" | "Overview" | "Artwork" | "Collections" | "Exhibitions" | "Studio settings";
 type Item = Record<string, any>;
 const tabs: [Tab, typeof Palette][] = [
   ["Overview", LayoutDashboard],
   ["Artwork", Palette],
   ["Pages & images", ImageIcon],
+  ["Logos", Palette],
   ["Collections", Layers],
   ["Exhibitions", CalendarDays],
   ["Studio settings", Settings],
@@ -803,7 +804,7 @@ export default function Admin({
             )}
           </div>
         )}
-        {tab === "Pages & images" && <PageImageManager content={content} save={save} upload={upload} busy={busy} uploading={uploading} preview={preview}/>}
+        {(tab === "Pages & images" || tab === "Logos") && <PageImageManager key={tab} logosOnly={tab === "Logos"} content={content} save={save} upload={upload} busy={busy} uploading={uploading} preview={preview}/>}
         {tab === "Studio settings" && (
           <form
             className="admin-settings admin-panel"

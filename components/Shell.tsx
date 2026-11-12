@@ -1,4 +1,5 @@
 "use client";
+import { studioLogo } from "@/lib/image-settings";
 import Link from "next/link";
 import {useImageSettings} from "./ImageSettingsProvider";
 import { usePathname } from "next/navigation";
@@ -17,15 +18,17 @@ const nav = [
   ["Contact", "/contact"],
 ];
 export function Logo() {
-  const images=useImageSettings();
+  const images = useImageSettings();
+  const desktop = images["brand.horizontal"]?.src || studioLogo;
+  const mobile = images["brand.vertical"]?.src || images["brand.horizontal"]?.src || studioLogo;
   return (
     <picture className="brand-logo">
       <source
         media="(max-width: 640px)"
-        srcSet={images["brand.vertical"]?.src || "/images/kira-logo-vertical.jpg"}
+        srcSet={mobile}
       />
       <img
-        src={images["brand.horizontal"]?.src || "/images/kira-logo-horizontal.jpg"}
+        src={desktop}
         alt="Kira Art Studio"
         width={190}
         height={95}
