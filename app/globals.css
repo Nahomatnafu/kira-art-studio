@@ -4164,3 +4164,7 @@ body {
 .artwork-galleries-editor summary {cursor:pointer;font-size:20px;margin-bottom:20px;}
 @media(max-width:900px){.page-image-toolbar{grid-template-columns:1fr;}.page-image-toolbar>span{grid-column:auto;}}
 @media(max-width:640px){.page-image-grid{grid-template-columns:1fr;}.image-editor-card{padding:18px;}.image-framing-controls{grid-template-columns:1fr;}.commission-photo-frame{min-height:320px;}.about-photo-frame{max-height:none;}.page-image-toolbar{padding:18px;}.home-contact-band>.managed-image{height:300px;min-height:0;}}
+
+@media (min-width: 901px) {
+  .logo-editor-toolbar { grid-template-columns: 1fr auto; }
+}

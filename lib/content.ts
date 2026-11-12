@@ -1,8 +1,9 @@
 import { z } from "zod";
+import { studioLogo } from "./image-settings";
 import { catalogArtworks } from "./catalog";
 import { studioCommunityPhotos } from "./media";
 export const safeUrl=z.string().max(2000).refine(s=>{
- if(!s)return true;
+ if(!s || s === studioLogo)return true;
  if(/[\\\u0000-\u0020\u007f]/.test(s))return false;
  try{const u=new URL(s,'https://kira.invalid');return s.startsWith('/')?(!s.startsWith('//')&&(u.pathname.startsWith('/images/')||u.pathname.startsWith('/uploads/'))&&!u.search&&!u.hash):u.protocol==='https:'&&!u.username&&!u.password;}catch{return false;}
 },"Use an HTTPS URL or uploaded image");

@@ -10,8 +10,8 @@ export default function ImageEditor({label,value,onChange,upload,uploading=false
   <div className="image-framing-preview" style={{aspectRatio:aspect,maxWidth:420*aspect,marginInline:"auto"}}>{value.src?<ArtworkImage src={value.src} alt={label+' preview'} framing={value}/>:<span>No photo selected</span>}</div>
   <label>Image URL<input value={value.src} maxLength={2000} onChange={e=>onChange({...value,src:e.target.value})}/></label>
   <div className="image-editor-actions">
-   <label className="button button-outline upload-button"><Upload size={16}/>{uploading?'Uploading…':'Replace image'}<input type="file" accept="image/jpeg,image/png,image/webp" disabled={uploading} onChange={e=>{const file=e.target.files?.[0];if(file)upload(file,url=>onChange({...value,src:url}));e.target.value=''}}/></label>
-   {library.length>0&&<label>Choose an existing photo<select value="" onChange={e=>{if(e.target.value)onChange({...value,src:e.target.value})}}><option value="">Photo library…</option>{library.map(x=><option key={x.src} value={x.src}>{x.label}</option>)}</select></label>}
+   <label className="button button-outline upload-button"><Upload size={16}/>{uploading?'Uploading…':(logos?'Replace logo':'Replace image')}<input type="file" accept="image/jpeg,image/png,image/webp" disabled={uploading} onChange={e=>{const file=e.target.files?.[0];if(file)upload(file,url=>onChange({...value,src:url}));e.target.value=''}}/></label>
+   {!logos&&library.length>0&&<label>Choose an existing photo<select value="" onChange={e=>{if(e.target.value)onChange({...value,src:e.target.value})}}><option value="">Photo library…</option>{library.map(x=><option key={x.src} value={x.src}>{x.label}</option>)}</select></label>}
   </div>
   {!logos&&<fieldset className="image-framing-controls"><legend>Image framing</legend>
    <label>Fit<select value={value.fit} onChange={e=>onChange({...value,fit:e.target.value as ImageSetting['fit']})}><option value="contain">Show full image</option><option value="cover">Fill frame</option></select></label>

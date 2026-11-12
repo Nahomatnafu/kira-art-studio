@@ -8,4 +8,4 @@ export function proxy(request:NextRequest){
  const response=NextResponse.next({request:{headers}});response.headers.set('Content-Security-Policy',policy);
  if(secure)response.headers.set('Strict-Transport-Security','max-age=31536000');return response;
 }
-export const config={matcher:['/((?!api|_next/static|_next/image|images/|uploads/|favicon.ico|icon.png).*)']};
+export const config={matcher:['/((?!api|_next/static|_next/image|images/|uploads/|favicon.ico|icon.png|kira-mark.webp).*)']};
