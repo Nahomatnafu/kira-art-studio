@@ -18,7 +18,12 @@ import ArtworkCard from "@/components/ArtworkCard";
 import ArtworkImage from "@/components/ArtworkImage";
 import SocialLinks from "@/components/SocialLinks";
 import PhotoGallery from "@/components/PhotoGallery";
-export const metadata: Metadata = { alternates: { canonical: "/" } };
+export const metadata: Metadata = {
+  title: { absolute: "KIRA Art Studio | Original Art in Portland, Oregon" },
+  description:
+    "Explore original paintings by Portland artist Kirubel Mikael, inspired by Ethiopian, Eritrean, and African culture. View the gallery or commission a painting.",
+  alternates: { canonical: "/" },
+};
 
 export default async function Home() {
   const c = await readContent();
