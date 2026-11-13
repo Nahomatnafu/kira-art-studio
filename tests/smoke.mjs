@@ -63,6 +63,17 @@ try {
     console.log("PASS page " + route);
   }
   assert.equal((await request("/does-not-exist")).status, 404);
+  assert.equal((await request("/constructor")).status, 404);
+  const robots = await (await request("/robots.txt")).text();
+  assert.match(robots, /Sitemap: https:\/\/kiraartstudio\.com\/sitemap\.xml/);
+  const aboutResponse = await request("/about?ref=test");
+  const aboutMeta = await aboutResponse.text();
+  assert.equal(aboutResponse.headers.get("x-robots-tag"), null);
+  assert.match(aboutMeta, /<link rel="canonical" href="https:\/\/kiraartstudio\.com\/about"/);
+  assert.doesNotMatch(aboutMeta, /<meta name="robots" content="[^"]*noindex/);
+  const adminResponse = await request("/admin");
+  assert.match(adminResponse.headers.get("x-robots-tag"), /noindex/);
+  assert.match(await adminResponse.text(), /<meta name="robots" content="noindex, nofollow"/);
   assert.equal((await request("/api/admin/content")).status, 401);
   assert.equal(
     (
@@ -100,6 +111,19 @@ try {
   const headers = { "Content-Type": "application/json", Cookie: cookie };
   let content = await (await request("/api/admin/content", { headers })).json();
   const original = structuredClone(content);
+  const crossOrigin = await request("/api/admin/content", {method: "PUT", headers: {...headers, Origin: "https://example.org"}, body: JSON.stringify(content)});
+  assert.equal(crossOrigin.status, 403, "A valid session does not allow a cross-origin write");
+  for (const mutate of [
+    data => { data.artworks[0].price = 20.123; },
+    data => { data.artworks[0].category = "does-not-exist"; },
+    data => { data.events[0].ticketUrl = "example.org/registration"; },
+    data => { data.settings.unexpected = "injected"; },
+    data => { data.settings.exhibitionPhotos.push("/images/../uploads/image.jpg"); },
+  ]) {
+    const invalid = structuredClone(content);
+    mutate(invalid);
+    assert.equal((await request("/api/admin/content",{method:"PUT",headers,body:JSON.stringify(invalid)})).status,400);
+  }
   content.settings.pageImages["about.artist"]={src:"/images/kira-artist-02.jpg",zoom:.8,positionX:30,positionY:60,fit:"contain"};
   content.artworks[0].status = "sold";
   content.artworks[0].title = "Smoke Test Sold";
@@ -189,6 +213,12 @@ try {
   assert.equal(update.status, 200);
   content = await update.json();
   assert.equal((await request("/artwork/" + id)).status, 404);
+  const sitemapResponse = await request("/sitemap.xml");
+  assert.equal(sitemapResponse.status, 200);
+  const sitemap = await sitemapResponse.text();
+  assert.match(sitemap, /<loc>https:\/\/kiraartstudio\.com\/about<\/loc>/);
+  assert.match(sitemap, /<loc>https:\/\/kiraartstudio\.com\/artwork\/quiet-majesty<\/loc>/);
+  assert.doesNotMatch(sitemap, /\/admin|\/api|test-added-art/);
   content.artworks = content.artworks.filter((x) => x.id !== id);
   content.collections = content.collections.filter(
     (x) => x.id !== "test-collection",
@@ -254,7 +284,7 @@ try {
   assert.equal((await request("/api/admin/content",{headers:{...headers,Cookie:cookie+"x"}})).status,401);
   const attachments=new FormData();attachments.set("file",new File(["file bytes"],"test.jpg",{type:"image/jpeg"}));
   assert.equal((await request("/api/inquiry",{method:"POST",body:attachments})).status,415,"Public multipart uploads rejected");
-  for(const data of [{...message,attachment:"data:image/png;base64,x"},{...message,email:"invalid"},{...message,name:"Injected\nHeader"},{...message,website:"spam"}]){
+  for(const data of [{...message,attachment:"data:image/png;base64,x"},{...message,email:"invalid"},{...message,name:"Injected\nHeader"},{...message,website:"spam"},{...message,phone:"555\r\n1234"},{...message,kind:"commission",category:"Painting",size:"24 in\nInjected"},{...message,kind:"community",category:"Painting"}]){
    assert.equal((await request("/api/inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})).status,400);
   }
   assert.equal((await request("/api/inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:"{"})).status,400);

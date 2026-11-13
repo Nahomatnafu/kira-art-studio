@@ -28,22 +28,15 @@ import PhotoGallery from "@/components/PhotoGallery";
 import InquiryForm from "@/components/InquiryForm";
 import SocialLinks from "@/components/SocialLinks";
 import { getStudioContacts } from "@/lib/content";
-const titles: Record<string, string> = {
-  about: "About the Artist",
-  collections: "Explore Collections",
-  artwork: "The Gallery",
-  commissions: "Commission a Painting",
-  exhibitions: "Exhibitions & Events",
-  community: "Community & Future Vision",
-  contact: "Let’s Create Something",
-};
+import { publicSections } from "@/lib/site";
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ section: string }>;
 }) {
   const { section } = await params;
-  return { title: titles[section] || "Page not found" };
+  if (!Object.hasOwn(publicSections, section)) notFound();
+  return { title: publicSections[section], alternates: { canonical: "/" + section } };
 }
 function PageHeading({
   eyebrow,
@@ -70,7 +63,7 @@ export default async function Page({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { section } = await params;
-  if (!titles[section]) notFound();
+  if (!Object.hasOwn(publicSections, section)) notFound();
   const c = await readContent();
   const contact = getStudioContacts(c.settings);
   const query = await searchParams;

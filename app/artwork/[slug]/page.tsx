@@ -14,10 +14,12 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const c = await readContent();
+  const artwork = c.artworks.find((a) => a.slug === slug && a.published);
+  if (!artwork) notFound();
   return {
-    title:
-      c.artworks.find((a) => a.slug === slug && a.published)?.title ||
-      "Artwork not found",
+    title: artwork.title,
+    description: artwork.story.trim().slice(0, 160) || undefined,
+    alternates: { canonical: "/artwork/" + artwork.slug },
   };
 }
 export default async function ArtworkDetail({

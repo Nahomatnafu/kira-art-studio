@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   Brush,
@@ -17,6 +18,8 @@ import ArtworkCard from "@/components/ArtworkCard";
 import ArtworkImage from "@/components/ArtworkImage";
 import SocialLinks from "@/components/SocialLinks";
 import PhotoGallery from "@/components/PhotoGallery";
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
 export default async function Home() {
   const c = await readContent();
   const contact = getStudioContacts(c.settings);

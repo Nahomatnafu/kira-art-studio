@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Header, Footer } from "@/components/Shell";
 import { readContent } from "@/lib/store";
 import { getStudioContacts } from "@/lib/content";
+import { siteOrigin } from "@/lib/site";
 import "./globals.css";
 export const metadata: Metadata = {
   title: {
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
   },
   description:
     "Original paintings inspired by Ethiopian, Eritrean, and African culture. Explore meaningful art, commission a painting, and connect with Kira Art Studio.",
-  robots: { index: false, follow: false },
+  metadataBase: new URL(siteOrigin),
+  robots: process.env.VERCEL_ENV === "preview" ? { index: false, follow: false } : undefined,
 };
 export const dynamic = "force-dynamic";
 export default async function RootLayout({

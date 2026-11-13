@@ -1,9 +1,9 @@
 import {NextResponse} from 'next/server';
-import {isAdmin,sameOrigin,rateLimit} from '@/lib/auth';
+import {isAdmin,sameAdminOrigin,rateLimit} from '@/lib/auth';
 import {uploadImage} from '@/lib/uploads';
 import {readUploadForm,RequestError} from '@/lib/request';
 export async function POST(req:Request){
- if(!sameOrigin(req)||!await isAdmin())return NextResponse.json({error:'Please sign in.'},{status:403});
+ if(!sameAdminOrigin(req)||!await isAdmin())return NextResponse.json({error:'Please sign in.'},{status:403});
  try{
  if(!await rateLimit(req,'admin-upload',60,3600))return NextResponse.json({error:'You have reached the hourly upload limit.'},{status:429,headers:{'Retry-After':'3600'}});
  const form=await readUploadForm(req,3*1024*1024+16384);

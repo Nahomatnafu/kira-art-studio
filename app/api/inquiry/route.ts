@@ -3,8 +3,23 @@ import {z} from 'zod';
 import {rateLimit,sameOrigin} from '@/lib/auth';
 import {hasStore} from '@/lib/store';
 import {readJson,RequestError} from '@/lib/request';
-const categories=['','Painting','Digital Art','T-shirt','Bag','3D','Collaborating with the studio','Youth art activities','Paint & Wine','Hike & Paint','Adult art gatherings'] as const;
-const schema=z.object({kind:z.enum(['contact','commission','community','experience']),name:z.string().trim().min(2).max(120).regex(/^[^\u0000-\u001f\u007f]+$/),email:z.email().max(254),phone:z.string().trim().max(40).regex(/^[0-9+().\s#xX-]*$/).default(''),size:z.string().trim().max(100).default(''),category:z.enum(categories).default(''),message:z.string().trim().min(10).max(6000).refine(s=>!/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(s)),website:z.string().max(200).default('')}).strict().refine(s=>s.kind!=='commission'||['Painting','Digital Art','T-shirt','Bag','3D'].includes(s.category),'Please choose a commission category.');
+import {commissionCategories,communityCategories} from "@/lib/inquiry-options";
+import {singleLine,multiline,phoneNumber} from "@/lib/input";
+const categories = ["", ...commissionCategories, ...communityCategories] as const;
+const schema = z.strictObject({
+  kind: z.enum(["contact", "commission", "community", "experience"]),
+  name: z.string().refine(singleLine).trim().min(2).max(120),
+  email: z.email().max(254),
+  phone: z.string().refine(singleLine).trim().max(40).refine(phoneNumber).default(""),
+  size: z.string().refine(singleLine).trim().max(100).default(""),
+  category: z.enum(categories).default(""),
+  message: z.string().refine(multiline).trim().min(10).max(6000),
+  website: z.string().max(200).default(""),
+}).refine(data => {
+  if (data.kind === "commission") return commissionCategories.some(value => value === data.category);
+  if (data.size) return false;
+  return !data.category || data.kind === "community" && communityCategories.some(value => value === data.category);
+});
 export async function POST(req:Request){
  if(!sameOrigin(req))return NextResponse.json({error:'Invalid request origin.'},{status:403});
  try{

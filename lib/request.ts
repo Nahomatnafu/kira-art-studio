@@ -8,8 +8,8 @@ export async function readLimitedBody(req:Request,maxBytes:number):Promise<Uint8
   if(declared!==null&&(!/^\d+$/.test(declared)||Number(declared)>maxBytes))throw new RequestError(413,'The request is too large.');
   if(!req.body)return new Uint8Array();
   const reader=req.body.getReader();const chunks:Uint8Array[]=[];let length=0,expired=false;
-  const timeout=setTimeout(()=>{expired=true;void reader.cancel();},10000);
-  try {while(true){const {done,value}=await reader.read();if(expired)throw new RequestError(408,'The request timed out. Please try again.');if(done)break;length+=value.byteLength;if(length>maxBytes){await reader.cancel();throw new RequestError(413,'The request is too large.');}chunks.push(value);}}
+  const timeout=setTimeout(()=>{expired=true;void reader.cancel().catch(()=>{});},10000);
+  try {while(true){const {done,value}=await reader.read();if(expired)throw new RequestError(408,'The request timed out. Please try again.');if(done)break;length+=value.byteLength;if(length>maxBytes){void reader.cancel().catch(()=>{});throw new RequestError(413,'The request is too large.');}chunks.push(value);}}
   finally{clearTimeout(timeout);reader.releaseLock();}
   const bytes=new Uint8Array(length);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length;}return bytes;
 }

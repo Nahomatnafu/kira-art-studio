@@ -1,5 +1,7 @@
+import { headers } from "next/headers";
+import { notFound } from "next/navigation";
 import Admin from "@/components/Admin";
-import { authReady, isAdmin } from "@/lib/auth";
+import { adminHostAllowed, authReady, isAdmin } from "@/lib/auth";
 import { hasStore, readContent } from "@/lib/store";
 import { seed } from "@/lib/content";
 export const metadata = {
@@ -7,6 +9,7 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 export default async function AdminPage() {
+  if (!adminHostAllowed(await headers())) notFound();
   const authenticated = await isAdmin();
   const configured = authReady() && hasStore();
   return (

@@ -1,4 +1,6 @@
 "use client";
+
+import { commissionCategories, communityCategories } from "@/lib/inquiry-options";
 import { useState } from "react";
 import { Check } from "lucide-react";
 export default function InquiryForm({
@@ -76,6 +78,7 @@ export default function InquiryForm({
           <input
             name="email"
             type="email"
+            maxLength={254}
             required
             autoComplete="email"
             placeholder="you@example.com"
@@ -106,7 +109,7 @@ export default function InquiryForm({
             Category <span>*</span>
             <select name="category" required>
               <option value="">Select a medium</option>
-              {["Painting", "Digital Art", "T-shirt", "Bag", "3D"].map((x) => (
+              {commissionCategories.map((x) => (
                 <option key={x}>{x}</option>
               ))}
             </select>
@@ -117,11 +120,7 @@ export default function InquiryForm({
         <label>
           I’m interested in
           <select name="category">
-            <option>Collaborating with the studio</option>
-            <option>Youth art activities</option>
-            <option>Paint & Wine</option>
-            <option>Hike & Paint</option>
-            <option>Adult art gatherings</option>
+            {communityCategories.map((x) => <option key={x}>{x}</option>)}
           </select>
         </label>
       )}

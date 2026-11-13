@@ -1,7 +1,10 @@
 import 'server-only';
 import {createHmac,createHash,timingSafeEqual,randomBytes} from 'node:crypto';
-import {cookies} from 'next/headers';
+import {isIP} from 'node:net';
+import {cookies,headers} from 'next/headers';
 import {neon} from '@neondatabase/serverless';
+import {siteOrigin} from './site';
+const adminHost = new URL(siteOrigin).host;
 const SESSION_MS=8*60*60*1000;
 export const sessionCookieName=()=>process.env.NODE_ENV==='production'?'__Host-kira_session':'kira_session';
 export const authReady=()=>Boolean(process.env.ADMIN_PASSWORD&&process.env.ADMIN_PASSWORD.length>=16&&process.env.SESSION_SECRET&&process.env.SESSION_SECRET.length>=32);
@@ -26,6 +29,7 @@ export async function createSession(){
   const payload=`${expires}.${id}`;return `${payload}.${sign(payload)}`;
 }
 export async function isAdmin(){
+  if(!adminHostAllowed(await headers()))return false;
   const token=verifyToken((await cookies()).get(sessionCookieName())?.value||'');if(!token)return false;
   try{if(process.env.DATABASE_URL){const sql=neon(process.env.DATABASE_URL);const rows=await sql`SELECT id_hash FROM kira_admin_sessions WHERE id_hash=${sessionKey(token.id)} AND expires>NOW()`;return rows.length===1;}
     return process.env.NODE_ENV!=='production'&&(localSessions().get(sessionKey(token.id))||0)>Date.now();
@@ -36,12 +40,22 @@ export async function revokeSession(){
   if(process.env.DATABASE_URL){const sql=neon(process.env.DATABASE_URL);await sql`DELETE FROM kira_admin_sessions WHERE id_hash=${sessionKey(token.id)}`;}
   else if(process.env.NODE_ENV!=='production')localSessions().delete(sessionKey(token.id));
 }
+export function adminHostAllowed(headers:Headers){
+  if(process.env.VERCEL !== '1')return true;
+  return process.env.VERCEL_ENV === 'production' && headers.get('host') === adminHost;
+}
+export function sameAdminOrigin(req:Request){
+  return adminHostAllowed(req.headers) && (process.env.VERCEL === '1'
+    ? req.headers.get('origin') === siteOrigin && req.headers.get('sec-fetch-site') !== 'cross-site'
+    : sameOrigin(req));
+}
 export function sameOrigin(req:Request){
   try{if(req.headers.get('sec-fetch-site')==='cross-site')return false;const raw=req.headers.get('origin');if(!raw)return false;const origin=new URL(raw),url=new URL(req.url);const host=req.headers.get('host')||url.host;const protocol=(req.headers.get('x-forwarded-proto')?.split(',')[0]||url.protocol.replace(':',''))+':';return origin.origin===`${protocol}//${host}`;}catch{return false;}
 }
 let lastCleanup=0;
 export async function rateLimit(req:Request,kind:string,max:number,windowSeconds:number,scope:'ip'|'global'='ip'){
-  const ip=scope==='global'?'global':(req.headers.get('x-vercel-forwarded-for')?.split(',')[0]||req.headers.get('x-forwarded-for')?.split(',')[0]||'local').trim();
+  const forwarded=(process.env.VERCEL==='1'?req.headers.get('x-vercel-forwarded-for'):null)?.split(',')[0].trim()||'';
+  const ip=scope==='global'?'global':isIP(forwarded)?forwarded:'unknown';
   const key=createHmac('sha256',process.env.SESSION_SECRET||'local-preview').update(kind+':'+ip).digest('hex');
   if(process.env.DATABASE_URL){const sql=neon(process.env.DATABASE_URL);await sql`CREATE TABLE IF NOT EXISTS kira_rate_limits (key text PRIMARY KEY, count integer NOT NULL, expires timestamptz NOT NULL)`;
     if(Date.now()-lastCleanup>300000){await sql`CREATE INDEX IF NOT EXISTS kira_rate_limits_expiry ON kira_rate_limits(expires)`;await sql`DELETE FROM kira_rate_limits WHERE expires<NOW()`;lastCleanup=Date.now();}

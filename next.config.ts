@@ -4,8 +4,8 @@ const config: NextConfig = {
   poweredByHeader: false,
   async headers() {
     return [
-      {source:"/api/:path*",headers:[{key:"Cache-Control",value:"no-store"}]},
-      {source:"/admin",headers:[{key:"Cache-Control",value:"no-store"},{key:"X-Robots-Tag",value:"noindex, nofollow"}]},
+      {source:"/api/:path*",headers:[{key:"Cache-Control",value:"no-store"},{key:"X-Robots-Tag",value:"noindex, nofollow"}]},
+      {source:"/admin/:path*",headers:[{key:"Cache-Control",value:"no-store"},{key:"X-Robots-Tag",value:"noindex, nofollow"}]},
       {
         source: "/(.*)",
         headers: [
